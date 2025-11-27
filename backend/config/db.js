@@ -1,13 +1,15 @@
 import mongoose from "mongoose";
 
-export function connectDB() {
+const connectDB = () => {
   mongoose
     .connect("mongodb://localhost:27017/")
     .then(() => {
       console.log("Connected");
     })
-    .then((err) => {
+    .catch((err) => {
       console.log(err);
     });
-}
+};
+
+export default connectDB;
 
