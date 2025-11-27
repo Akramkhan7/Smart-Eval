@@ -1,0 +1,83 @@
+import React from "react";
+import FloatingAnimate from "../Animations/FloatingAnimate"; // Make sure this is correct path
+
+const Login = () => {
+  return (
+    <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden text-white">
+      
+      {/* Background Animation */}
+      <FloatingAnimate />
+
+      {/* Login Card */}
+      <div className="relative w-full max-w-md p-8 rounded-2xl 
+            backdrop-blur-xl
+            border border-white/30 shadow-xl z-10">
+
+        {/* User Icon */}
+        <div className="absolute top-2 left-1/2 transform -translate-x-1/2 
+              bg-white/10 p-4 rounded-full border border-white/20 z-20">
+          <svg width="50" height="50" fill="white" viewBox="0 0 512 512">
+            <path d="M256 0C114.6 0 0 114.6 0 256s114.6 256 256 256
+            256-114.6 256-256S397.4 0 256 0zm0 96c44.1 0 80 35.9 80 80s-35.9 
+            80-80 80-80-35.9-80-80 35.9-80 80-80zm0 352c-52.9 0-100.9-25.9-130.6-65.9
+            14.8-39.6 52.7-66.1 97.1-66.1h67c44.4 0 82.3 26.5 97.1 66.1C356.9 
+            422.1 308.9 448 256 448z"/>
+          </svg>
+        </div>
+
+        <form className="mt-16 space-y-6 z-20 relative">
+
+          <h1 className="text-2xl font-bold text-center text-white p-2">User Login</h1>
+
+          {/* Email */}
+          <div className="border-b border-white/40 py-2 flex items-center gap-3">
+            <input
+              type="email"
+              placeholder="Email ID"
+              className="bg-transparent text-white placeholder-white/60 w-full outline-none"
+            />
+          </div>
+
+          {/* Password */}
+          <div className="border-b border-white/40 py-2 flex items-center gap-3">
+            <input
+              type="password"
+              placeholder="Password"
+              className="bg-transparent text-white placeholder-white/60 w-full outline-none"
+            />
+          </div>
+
+          {/* Remember & Forgot */}
+          <div className="flex justify-between text-white/70 text-sm">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" className="accent-blue-400" />
+              Remember me
+            </label>
+            <a className="hover:text-white cursor-pointer">Forgot Password?</a>
+          </div>
+
+          {/* Login Button */}
+          <button
+            type="button"
+            className="w-full py-3 rounded-full text-white text-lg font-semibold
+            bg-linear-to-r from-purple-600 to-blue-500 hover:opacity-90 transition"
+          >
+            Login
+          </button>
+
+        </form>
+
+        {/* Sign Up */}
+        <p className="text-center text-white/60 text-sm mt-6">
+          Don't have an account?
+          <span className="ml-1 text-white cursor-pointer hover:underline">
+            Sign Up
+          </span>
+        </p>
+
+      </div>
+    </div>
+  );
+};
+
+export default Login;

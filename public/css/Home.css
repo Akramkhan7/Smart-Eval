@@ -1,0 +1,9 @@
+.home-wrapper {
+  height: 100vh;
+  width: 100%;
+  background-image: url("/images/bg-fixed.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
+}
