@@ -4,7 +4,6 @@ const ToastContext = createContext();
 
 export const ToastProvider = ({ children }) => {
   const [toast, setToast] = useState(null);
-
   const showToast = (message, type = "info") => {
     setToast({ message, type });
 
@@ -14,7 +13,7 @@ export const ToastProvider = ({ children }) => {
   };
 
   return (
-    <ToastContext.Provider value={showToast}>
+    <ToastContext.Provider value={{showToast}}>
       {children}
       {toast && (
         <div

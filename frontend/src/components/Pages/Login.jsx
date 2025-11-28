@@ -1,20 +1,36 @@
 import React from "react";
 import FloatingAnimate from "../Animations/FloatingAnimate"; // Make sure this is correct path
 import { useToast } from "../../context/ToastContext";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 
 const Login = () => {
   const { showToast } = useToast();
+  const [form, setForm] = useState(null);
+  const navigate = useNavigate();
 
   const submitHandler = async (e) => {
+    console.log("clicked");
     e.preventDefault();
-    let name = e.target.userName;
-    let email = e.target.email;
-    let password = e.target.password;
+    console.log(form);
 
-    let data = await fetch("http://localhost:3000/user/login");
-    if (res.data.messages?.length > 0) {
-      const msg = res.data.messages[0];
-      res.data.success ? showToast(msg, "success") : showToast(msg, "error");
+    let res = await fetch("http://localhost:3000/user/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(form),
+    });
+    res = await res.json();
+    console.log(res);
+    if (res.messages?.length > 0) {
+      const msg = res.messages[0];
+      res.success ? showToast(msg, "success") : showToast(msg, "error");
+    }
+    if (res.success) {
+      navigate("/");
     }
   };
   return (
@@ -57,6 +73,8 @@ const Login = () => {
             <input
               type="email"
               placeholder="Email ID"
+              name="email"
+              onChange={(e) => setForm({ ...form, email: e.target.value })}
               className="bg-transparent text-white placeholder-white/60 w-full outline-none"
             />
           </div>
@@ -65,7 +83,9 @@ const Login = () => {
           <div className="border-b border-white/40 py-2 flex items-center gap-3">
             <input
               type="password"
+              name="password"
               placeholder="Password"
+              onChange={(e) => setForm({ ...form, password: e.target.value })}
               className="bg-transparent text-white placeholder-white/60 w-full outline-none"
             />
           </div>
@@ -73,7 +93,11 @@ const Login = () => {
           {/* Remember & Forgot */}
           <div className="flex justify-between text-white/70 text-sm">
             <label className="flex items-center gap-2 cursor-pointer">
-              <input type="checkbox" className="accent-blue-400" />
+              <input
+                type="checkbox"
+                className="accent-blue-400"
+                onChange={(e) => setForm({ ...form, remember: e.target.value })}
+              />
               Remember me
             </label>
             <a className="hover:text-white cursor-pointer">Forgot Password?</a>
@@ -81,8 +105,7 @@ const Login = () => {
 
           {/* Login Button */}
           <button
-            type="button"
-            onClick={submitHandler}
+            type="submit"
             className="w-full py-3 rounded-full text-white text-lg font-semibold
             bg-linear-to-r from-purple-600 to-blue-500 hover:opacity-90 transition"
           >
