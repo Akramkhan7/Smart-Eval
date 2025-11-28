@@ -1,57 +1,74 @@
 import users from "../models/user.js";
 import jwt from "jsonwebtoken";
-import bcrypt from "brcypt";
+import bcrypt from "bcrypt";
+import cookie from "cookie-parser";
+import dotenv from "dotenv";
+dotenv.config();
 
-const userRegister = async (req, res) => {
+export const userRegister = async (req, res) => {
   try {
     let { name, email, password } = req.body;
-    if (!name || !email || !password) res.json("Enter All Details");
 
-    let isExist = await users.findOne({ email: email });
+    if (!name || !email || !password)
+      return res.json({ success: false, messages: ["Enter All Details"] });
+
+    email = email.toLowerCase();
+
+    let isExist = await users.findOne({ email });
     if (isExist) {
-      return res.json("User Already Exist Please Login");
-      return res.redirect("/login");
+      req.flash("error", "User Already Exist. Please Login");
+      return res.json({ success: false, messages: req.flash("error") });
     }
-    password = bcrypt.hash(password, 10);
 
-    let user = await users.create({
-      name: name,
-      email: email.toLowerCase(),
-      password: password,
-    });
-    if (user) {
-      return res.json("User Registered Successfully");
-      return res.redirect("/login");
-    }
+    password = await bcrypt.hash(password, 10);
+
+    let user = await users.create({ name, email, password });
+    console.log("Logged IN ");
+
+    req.flash("success", "User Registered Successfully. Please Login");
+    return res.json({ success: true, messages: req.flash("success") });
   } catch (err) {
-    return res.json("Error In register");
-    res.redirect("/login");
-  }
-};
-const userLogin = async (req, res) => {
-  try {
-    let { email, password } = req.body;
-
-    if (!email || !password) return res.json("Enter email and password ");
-
-    let user = await users.findOne({ email: email });
-
-    if (!user) {
-      return res.json("User does't exist , Please Register First!");
-    }
-    let validPass = bcrypt.compare(password, user.password);
-
-    if (!validPass) {
-      return res.json("Please Enter Valid Email and pass");
-    }
-    let token = jwt.sign({ email: email }, process.env.JWT_SECRET, {
-      expiry: "7d",
-    });
-    res.cookies("token", token);
-    return es.redirect("/");
-  } catch (err) {
-    return res.json("Erorr In Login");
+    req.flash("error", "Error in register");
+    return res.json({ success: false, messages: req.flash("error") });
   }
 };
 
-export default { userRegister, userLogin };
+export const userLogin = async (req, res) => {
+  let { email, password } = req.body;
+
+  if (!email || !password) {
+    req.flash("error", "Enter email and password");
+    return res.json({ success: false, messages: req.flash("error") });
+  }
+
+  email = email.toLowerCase();
+
+  let user = await users.findOne({ email });
+  if (!user) {
+    req.flash("error", "User does not exist. Please Register First!");
+    return res.json({ success: false, messages: req.flash("error") });
+  }
+
+  const validPass = await bcrypt.compare(password, user.password);
+
+  if (!validPass) {
+    req.flash("error", "Invalid Email or Password");
+    return res.json({ success: false, messages: req.flash("error") });
+  }
+
+  let token = jwt.sign(
+    { email: user.email, id: user._id },
+    process.env.JWT_SECRET,
+    { expiresIn: "7d" }
+  );
+
+  res.cookie("token", token, {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: false, // true in production
+  });
+  console.log("Logged IN ");
+
+  req.flash("success", "User Logged In Successfully 🎉");
+  return res.json({ success: true, messages: req.flash("success") });
+};

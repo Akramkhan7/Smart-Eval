@@ -3,18 +3,19 @@ import { useContext } from "react";
 import { createContext } from "react";
 
 const ToastContext = createContext();
-const [toast, setToast] = useState(null);
-const showToast = (message, type = "info") => {
-  setToast({ message, type });
-
-  setTimeout(() => {
-    setToast(null);
-  }, 3000);
-};
 
 export const ToastProvider = ({ children }) => {
+  const [toast, setToast] = useState(null);
+  const showToast = (message, type = "info") => {
+    setToast({ message, type });
+
+    setTimeout(() => {
+      setToast(null);
+    }, 3000);
+  };
+
   return (
-    <ToastContext.Provider value={showToast}>
+    <ToastContext.Provider value={{showToast}}>
       {children}
       {toast && (
         <div
