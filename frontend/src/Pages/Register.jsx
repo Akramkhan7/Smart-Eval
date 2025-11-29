@@ -3,7 +3,7 @@ import { Eye, EyeOff, Mail, Lock, User, ArrowRight } from "lucide-react";
 import { useToast } from "../context/ToastContext";
 import { useNavigate } from "react-router-dom";
 export default function AuthPage() {
-  const Navigate =  useNavigate();
+  const Navigate = useNavigate();
   const { showToast } = useToast();
   const [form, setForm] = useState(null);
 
