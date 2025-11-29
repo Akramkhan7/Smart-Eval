@@ -23,7 +23,6 @@ export const userRegister = async (req, res) => {
     password = await bcrypt.hash(password, 10);
 
     let user = await users.create({ name, email, password });
-    console.log("Logged IN ");
 
     req.flash("success", "User Registered Successfully. Please Login");
     return res.json({ success: true, messages: req.flash("success") });
@@ -65,10 +64,15 @@ export const userLogin = async (req, res) => {
   res.cookie("token", token, {
     httpOnly: true,
     sameSite: "lax",
-    secure: false, // true in production
+    secure: false,
   });
-  console.log("Logged IN ");
 
   req.flash("success", "User Logged In Successfully 🎉");
-  return res.json({ success: true, messages: req.flash("success") });
+  return res.json({ success: true, messages: req.flash("success"),
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email
+    }
+   });
 };

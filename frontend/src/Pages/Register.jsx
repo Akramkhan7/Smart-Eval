@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight } from "lucide-react";
-import { useToast } from "../../context/ToastContext";
-import { Navigate } from "react-router-dom";
+import { useToast } from "../context/ToastContext";
+import { useNavigate } from "react-router-dom";
 export default function AuthPage() {
+  const Navigate =  useNavigate();
   const { showToast } = useToast();
   const [form, setForm] = useState(null);
 
@@ -77,7 +78,7 @@ export default function AuthPage() {
               onClick={() => setIsLogin(false)}
               className={`flex-1 py-3 rounded-xl font-semibold transition-all duration-300 ${
                 !isLogin
-                  ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg"
+                  ? "bg-linear-to-r from-purple-600 to-pink-600 text-white shadow-lg"
                   : "text-gray-600 hover:text-gray-900"
               }`}
             >

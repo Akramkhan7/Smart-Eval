@@ -1,19 +1,18 @@
 import React from "react";
 import FloatingAnimate from "../Animations/FloatingAnimate"; // Make sure this is correct path
-import { useToast } from "../../context/ToastContext";
+import { useToast } from "../context/ToastContext";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import { useUser } from "../context/UserContext";
 
 const Login = () => {
+  const { setUser } = useUser();
   const { showToast } = useToast();
   const [form, setForm] = useState(null);
   const navigate = useNavigate();
 
   const submitHandler = async (e) => {
-    console.log("clicked");
     e.preventDefault();
-    console.log(form);
 
     let res = await fetch("http://localhost:3000/user/login", {
       method: "POST",
@@ -24,13 +23,15 @@ const Login = () => {
       body: JSON.stringify(form),
     });
     res = await res.json();
-    console.log(res);
     if (res.messages?.length > 0) {
       const msg = res.messages[0];
       res.success ? showToast(msg, "success") : showToast(msg, "error");
     }
     if (res.success) {
+      setUser(res.user); 
+      localStorage.setItem("user", JSON.stringify(res.user));
       navigate("/");
+      
     }
   };
   return (

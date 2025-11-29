@@ -1,6 +1,4 @@
-import { useState } from "react";
-import { useContext } from "react";
-import { createContext } from "react";
+import { createContext, useContext, useState } from "react";
 
 const ToastContext = createContext();
 
