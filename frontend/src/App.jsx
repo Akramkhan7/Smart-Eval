@@ -4,7 +4,6 @@ import Home from "./Pages/Home";
 import Login from ".//Pages/Login";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ToastProvider } from "./context/ToastContext";
-import CyberAuth from "./Pages/Register";
 import { UserProvider } from "./context/UserContext";
 import HeaderWrapper from "./components/Home/Headers/HeaderWrapper";
 import Student from "./Pages/Student";
@@ -20,7 +19,7 @@ function App() {
               <HeaderWrapper />
               <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/register" element={<CyberAuth />} />
+                <Route path="/register" element={<AuthPage />} />
                 <Route path="/login" element={<Login />} />
                 {/* <Route path="/StudentDashboard" element={<Student />} /> */}
               </Routes>
