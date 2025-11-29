@@ -6,16 +6,16 @@ function FloatingAnimate() {
     <div
       style={{
         width: "100%",
-        height: "50vh",       // animation height
-        position: "fixed",    // fixed so it stays in place
+        height: "50vh", // animation height
+        position: "fixed", // fixed so it stays in place
         top: 0,
         left: 0,
-        zIndex: -10,          // behind all content
-        pointerEvents: "auto" // allow hover events
+        zIndex: -10, // behind all content
+        pointerEvents: "auto", // allow hover events
       }}
     >
       <Particles
-        particleColors={['#ffffff', '#ffffff']}
+        particleColors={["#ffffff", "#ffffff"]}
         particleCount={200}
         particleSpread={10}
         speed={0.1}

@@ -9,6 +9,8 @@ import HeaderWrapper from "./components/Home/Headers/HeaderWrapper";
 import Student from "./Pages/Student";
 import AuthPage from "./Pages/Register";
 import { AuthProvider } from "./context/AuthContext";
+import StudentDashboard from "./Pages/Student";
+import FloatingAnimate from "./Animations/FloatingAnimate";
 function App() {
   return (
     <>
@@ -16,11 +18,13 @@ function App() {
         <ToastProvider>
           <UserProvider>
             <BrowserRouter>
-              <HeaderWrapper />
+              {/* <HeaderWrapper /> */}
+               <FloatingAnimate />
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/register" element={<AuthPage />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/Dashboard" element={<StudentDashboard />} />
                 {/* <Route path="/StudentDashboard" element={<Student />} /> */}
               </Routes>
             </BrowserRouter>

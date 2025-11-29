@@ -33,7 +33,11 @@ export const userRegister = async (req, res) => {
 };
 
 export const userLogin = async (req, res) => {
-  let { email, password } = req.body;
+  let { email, password, role } = req.body;
+  if (role && role !== "student") {
+    req.flash("error", "Role mismatched");
+    return res.json({ success: false, messages: req.flash("error") });
+  }
 
   if (!email || !password) {
     req.flash("error", "Enter email and password");
@@ -68,11 +72,13 @@ export const userLogin = async (req, res) => {
   });
 
   req.flash("success", "User Logged In Successfully 🎉");
-  return res.json({ success: true, messages: req.flash("success"),
+  return res.json({
+    success: true,
+    messages: req.flash("success"),
     user: {
       id: user._id,
       name: user.name,
-      email: user.email
-    }
-   });
+      email: user.email,
+    },
+  });
 };

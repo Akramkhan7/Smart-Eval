@@ -12,6 +12,7 @@ export const AuthProvider = ({ children }) => {
         credentials: "include",
       });
       const data = await res.json();
+      console.log(data.user);
 
       if (data.loggedIn) {
         setUser(data.user);

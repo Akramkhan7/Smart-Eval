@@ -8,30 +8,41 @@ import { useUser } from "../context/UserContext";
 const Login = () => {
   const { setUser } = useUser();
   const { showToast } = useToast();
-  const [form, setForm] = useState(null);
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+    role: "",
+  });
   const navigate = useNavigate();
 
   const submitHandler = async (e) => {
     e.preventDefault();
+    console.log(form);
+    let res = "";
+    if (form.role === "teacher") {
+      alert("Login Failed as Teacher");
+    } else if (form.role === "admin") {
+      alert("Login Failed as Admin");
+    } else {
+      res = res = await fetch("http://localhost:3000/user/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(form),
+      });
+    }
 
-    let res = await fetch("http://localhost:3000/user/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify(form),
-    });
     res = await res.json();
     if (res.messages?.length > 0) {
       const msg = res.messages[0];
       res.success ? showToast(msg, "success") : showToast(msg, "error");
     }
     if (res.success) {
-      setUser(res.user); 
+      setUser(res.user);
       localStorage.setItem("user", JSON.stringify(res.user));
       navigate("/");
-      
     }
   };
   return (
@@ -92,16 +103,47 @@ const Login = () => {
           </div>
 
           {/* Remember & Forgot */}
-          <div className="flex justify-between text-white/70 text-sm">
-            <label className="flex items-center gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                className="accent-blue-400"
-                onChange={(e) => setForm({ ...form, remember: e.target.value })}
-              />
-              Remember me
-            </label>
-            <a className="hover:text-white cursor-pointer">Forgot Password?</a>
+          <div className="flex justify-start gap-5 items-center text-white/70 text-sm">
+            {/* Radio Buttons */}
+            Login As:
+            <div className="flex items-center gap-4">
+              <label className="flex items-center gap-1 cursor-pointer">
+                <input
+                  type="radio"
+                  name="role"
+                  value="student"
+                  required
+                  checked={form.role === "student"}
+                  onChange={(e) => setForm({ ...form, role: e.target.value })}
+                  className="accent-blue-400"
+                />
+                Student
+              </label>
+
+              <label className="flex items-center gap-1 cursor-pointer">
+                <input
+                  type="radio"
+                  name="role"
+                  value="teacher"
+                  checked={form.role === "teacher"}
+                  onChange={(e) => setForm({ ...form, role: e.target.value })}
+                  className="accent-blue-400"
+                />
+                Teacher
+              </label>
+
+              <label className="flex items-center gap-1 cursor-pointer">
+                <input
+                  type="radio"
+                  name="role"
+                  value="admin"
+                  checked={form.role === "admin"}
+                  onChange={(e) => setForm({ ...form, role: e.target.value })}
+                  className="accent-blue-400"
+                />
+                Admin
+              </label>
+            </div>
           </div>
 
           {/* Login Button */}

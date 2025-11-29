@@ -1,4 +1,4 @@
-import express, { urlencoded } from "express";
+import express from "express";
 import conectDB from "./config/db.js";
 import users from "./models/user.js";
 import admininstrators from "./models/administrator.js";
@@ -9,6 +9,7 @@ import flash from "connect-flash";
 import env from "dotenv";
 import cookie from "cookie-parser";
 import { userLogin, userRegister } from "./controllers/userLogin.js";
+import userRoutes from "./routes/userRoutes/user.js";
 
 env.config();
 
@@ -43,13 +44,7 @@ app.use(express.json());
 app.post("/user/login", userLogin);
 app.post("/user/register", userRegister);
 
-app.get("/user/check", (req, res) => {
-  if (req.user) {
-    // e.g., Passport / custom middleware
-    return res.json({ loggedIn: true, user: req.user });
-  }
-  return res.json({ loggedIn: false });
-});
+app.use("/auth", userRoutes);
 
 app.get("/", (req, res) => {
   console.log("This is Home");
