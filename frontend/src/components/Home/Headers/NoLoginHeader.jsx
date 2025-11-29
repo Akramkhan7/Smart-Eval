@@ -1,7 +1,7 @@
 import React from "react";
 import { FaUserCircle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom"; // FIX 1: useNavigate is the hook, not Navigate
-import useScrollDirection from "../Hooks/useScrollDirection";
+import useScrollDirection from "../../../Hooks/useScrollDirection";
 
 const Header = () => {
   const scrollDirection = useScrollDirection();
@@ -14,7 +14,7 @@ const Header = () => {
     : 'translate-y-0';
 
   return (
-    <header className={`
+<header className={`
       fixed top-0 left-0 w-full z-50
       bg-transparent
       flex items-center justify-between

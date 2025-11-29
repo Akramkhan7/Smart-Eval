@@ -1,9 +1,9 @@
 import React from "react";
 import { Download, BarChart, Zap } from "lucide-react";
-import FeatureSection from "./FeatureSection";
+import FeatureSection from "./FeatureBlocks/FeatureSection"
 import { IoIosArrowRoundForward } from "react-icons/io";
-import ProfessionalBusiness from "./ProfessionalBusiness";
-import HeroSection3 from "./HeroSection3";
+import ProfessionalBusiness from "./FeatureBlocks/ProfessionalBusiness";
+import HeroSection3 from "../Steps";
 
 
 
@@ -22,7 +22,7 @@ const waveBackgroundStyle = {
   "--wave-color-end": "#4D97FF",
 };
 
-export default function HeroSection2() {
+export default function Features() {
   return (
     <div className="min-h-screen py-20 px-4 sm:px-8 font-sans">
       {/* HEADER */}

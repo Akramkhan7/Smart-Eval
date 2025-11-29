@@ -1,14 +1,14 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { gsap } from 'gsap';
-import { Download } from 'lucide-react'; // Assuming you use lucide-react
+import React, { useRef, useEffect, useState, useCallback } from "react";
+import { gsap } from "gsap";
+import { Download } from "lucide-react"; // Assuming you use lucide-react
 
 // --- CONSTANTS & HELPER FUNCTIONS (From MagicBento Source) ---
 const DEFAULT_PARTICLE_COUNT = 12;
-const DEFAULT_GLOW_COLOR = '132, 0, 255'; // Purple glow used in the styling
+const DEFAULT_GLOW_COLOR = "132, 0, 255"; // Purple glow used in the styling
 
 const createParticleElement = (x, y, color = DEFAULT_GLOW_COLOR) => {
-  const el = document.createElement('div');
-  el.className = 'particle';
+  const el = document.createElement("div");
+  el.className = "particle";
   el.style.cssText = `
     position: absolute;
     width: 4px;
@@ -27,7 +27,7 @@ const createParticleElement = (x, y, color = DEFAULT_GLOW_COLOR) => {
 // --- PARTICLE CARD COMPONENT (The Animation Engine) ---
 const ParticleCard = ({
   children,
-  className = '',
+  className = "",
   disableAnimations = false,
   style,
   particleCount = DEFAULT_PARTICLE_COUNT,
@@ -50,7 +50,11 @@ const ParticleCard = ({
 
     const { width, height } = cardRef.current.getBoundingClientRect();
     memoizedParticles.current = Array.from({ length: particleCount }, () =>
-      createParticleElement(Math.random() * width, Math.random() * height, glowColor)
+      createParticleElement(
+        Math.random() * width,
+        Math.random() * height,
+        glowColor
+      )
     );
     particlesInitialized.current = true;
   }, [particleCount, glowColor]);
@@ -60,15 +64,15 @@ const ParticleCard = ({
     timeoutsRef.current = [];
     magnetismAnimationRef.current?.kill();
 
-    particlesRef.current.forEach(particle => {
+    particlesRef.current.forEach((particle) => {
       gsap.to(particle, {
         scale: 0,
         opacity: 0,
         duration: 0.3,
-        ease: 'back.in(1.7)',
+        ease: "back.in(1.7)",
         onComplete: () => {
           particle.parentNode?.removeChild(particle);
-        }
+        },
       });
     });
     particlesRef.current = [];
@@ -89,24 +93,28 @@ const ParticleCard = ({
         cardRef.current.appendChild(clone);
         particlesRef.current.push(clone);
 
-        gsap.fromTo(clone, { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, ease: 'back.out(1.7)' });
+        gsap.fromTo(
+          clone,
+          { scale: 0, opacity: 0 },
+          { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(1.7)" }
+        );
 
         gsap.to(clone, {
           x: (Math.random() - 0.5) * 100,
           y: (Math.random() - 0.5) * 100,
           rotation: Math.random() * 360,
           duration: 2 + Math.random() * 2,
-          ease: 'none',
+          ease: "none",
           repeat: -1,
-          yoyo: true
+          yoyo: true,
         });
 
         gsap.to(clone, {
           opacity: 0.3,
           duration: 1.5,
-          ease: 'power2.inOut',
+          ease: "power2.inOut",
           repeat: -1,
-          yoyo: true
+          yoyo: true,
         });
       }, index * 100);
 
@@ -124,7 +132,13 @@ const ParticleCard = ({
       if (enableStars) animateParticles();
 
       if (enableTilt) {
-        gsap.to(element, { rotateX: 5, rotateY: 5, duration: 0.3, ease: 'power2.out', transformPerspective: 1000 });
+        gsap.to(element, {
+          rotateX: 5,
+          rotateY: 5,
+          duration: 0.3,
+          ease: "power2.out",
+          transformPerspective: 1000,
+        });
       }
     };
 
@@ -133,15 +147,20 @@ const ParticleCard = ({
       clearAllParticles();
 
       if (enableTilt) {
-        gsap.to(element, { rotateX: 0, rotateY: 0, duration: 0.3, ease: 'power2.out' });
+        gsap.to(element, {
+          rotateX: 0,
+          rotateY: 0,
+          duration: 0.3,
+          ease: "power2.out",
+        });
       }
 
       if (enableMagnetism) {
-        gsap.to(element, { x: 0, y: 0, duration: 0.3, ease: 'power2.out' });
+        gsap.to(element, { x: 0, y: 0, duration: 0.3, ease: "power2.out" });
       }
     };
 
-    const handleMouseMove = e => {
+    const handleMouseMove = (e) => {
       if (!enableTilt && !enableMagnetism) return;
 
       const rect = element.getBoundingClientRect();
@@ -153,25 +172,41 @@ const ParticleCard = ({
       if (enableTilt) {
         const rotateX = ((y - centerY) / centerY) * -10;
         const rotateY = ((x - centerX) / centerX) * 10;
-        gsap.to(element, { rotateX, rotateY, duration: 0.1, ease: 'power2.out', transformPerspective: 1000 });
+        gsap.to(element, {
+          rotateX,
+          rotateY,
+          duration: 0.1,
+          ease: "power2.out",
+          transformPerspective: 1000,
+        });
       }
 
       if (enableMagnetism) {
         const magnetX = (x - centerX) * 0.05;
         const magnetY = (y - centerY) * 0.05;
-        magnetismAnimationRef.current = gsap.to(element, { x: magnetX, y: magnetY, duration: 0.3, ease: 'power2.out' });
+        magnetismAnimationRef.current = gsap.to(element, {
+          x: magnetX,
+          y: magnetY,
+          duration: 0.3,
+          ease: "power2.out",
+        });
       }
     };
 
-    const handleClick = e => {
+    const handleClick = (e) => {
       if (!clickEffect) return;
 
       const rect = element.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
-      const maxDistance = Math.max(Math.hypot(x, y), Math.hypot(x - rect.width, y), Math.hypot(x, y - rect.height), Math.hypot(x - rect.width, y - rect.height));
+      const maxDistance = Math.max(
+        Math.hypot(x, y),
+        Math.hypot(x - rect.width, y),
+        Math.hypot(x, y - rect.height),
+        Math.hypot(x - rect.width, y - rect.height)
+      );
 
-      const ripple = document.createElement('div');
+      const ripple = document.createElement("div");
       ripple.style.cssText = `
         position: absolute;
         width: ${maxDistance * 2}px;
@@ -186,29 +221,48 @@ const ParticleCard = ({
 
       element.appendChild(ripple);
 
-      gsap.fromTo(ripple, { scale: 0, opacity: 1 }, { scale: 1, opacity: 0, duration: 0.8, ease: 'power2.out', onComplete: () => ripple.remove() });
+      gsap.fromTo(
+        ripple,
+        { scale: 0, opacity: 1 },
+        {
+          scale: 1,
+          opacity: 0,
+          duration: 0.8,
+          ease: "power2.out",
+          onComplete: () => ripple.remove(),
+        }
+      );
     };
 
-    element.addEventListener('mouseenter', handleMouseEnter);
-    element.addEventListener('mouseleave', handleMouseLeave);
-    element.addEventListener('mousemove', handleMouseMove);
-    element.addEventListener('click', handleClick);
+    element.addEventListener("mouseenter", handleMouseEnter);
+    element.addEventListener("mouseleave", handleMouseLeave);
+    element.addEventListener("mousemove", handleMouseMove);
+    element.addEventListener("click", handleClick);
 
     return () => {
       isHoveredRef.current = false;
-      element.removeEventListener('mouseenter', handleMouseEnter);
-      element.removeEventListener('mouseleave', handleMouseLeave);
-      element.removeEventListener('mousemove', handleMouseMove);
-      element.removeEventListener('click', handleClick);
+      element.removeEventListener("mouseenter", handleMouseEnter);
+      element.removeEventListener("mouseleave", handleMouseLeave);
+      element.removeEventListener("mousemove", handleMouseMove);
+      element.removeEventListener("click", handleClick);
       clearAllParticles();
     };
-  }, [animateParticles, clearAllParticles, disableAnimations, enableTilt, enableMagnetism, clickEffect, glowColor, enableStars]);
+  }, [
+    animateParticles,
+    clearAllParticles,
+    disableAnimations,
+    enableTilt,
+    enableMagnetism,
+    clickEffect,
+    glowColor,
+    enableStars,
+  ]);
 
   return (
     <div
       ref={cardRef}
       className={`${className} relative overflow-hidden`}
-      style={{ ...style, position: 'relative', overflow: 'hidden' }}
+      style={{ ...style, position: "relative", overflow: "hidden" }}
     >
       {children}
     </div>
@@ -279,18 +333,17 @@ const ProfessionalBusiness = () => {
           {/* Left Text Column */}
           <div className="flex-1 max-w-xl text-lg text-gray-300 space-y-8">
             <p>
-              This is a space to share more about the business: who's
-              behind it, what it does and what this site has to offer. It's
-              an opportunity to tell the story behind the business or
-              describe a special service or product it offers. You can use
-              this section to share the company history or highlight a
-              particular feature that sets it apart from competitors.
+              This is a space to share more about the business: who's behind it,
+              what it does and what this site has to offer. It's an opportunity
+              to tell the story behind the business or describe a special
+              service or product it offers. You can use this section to share
+              the company history or highlight a particular feature that sets it
+              apart from competitors.
             </p>
             <p>
-              Let the writing speak for itself. Keep a consistent tone and
-              voice throughout the website to stay true to the brand
-              image and give visitors a taste of the company's values
-              and personality.
+              Let the writing speak for itself. Keep a consistent tone and voice
+              throughout the website to stay true to the brand image and give
+              visitors a taste of the company's values and personality.
             </p>
           </div>
 
@@ -309,18 +362,14 @@ const ProfessionalBusiness = () => {
               particleCount={10}
             >
               {/* Abstract Wave Background Image */}
-<img
+              <img
                 src="https://image.pollinations.ai/prompt/abstract%20wave%20lines%20purple%20with%20central%20glow%20on%20dark%20background"
                 alt="Abstract wave lines"
                 className="absolute inset-0 w-full h-full object-cover rounded-2xl opacity-80"
               />
 
-
-
               {/* Placeholder Content for the Card */}
-              <div className="relative z-10 text-center text-white p-4">
-                
-              </div>
+              <div className="relative z-10 text-center text-white p-4"></div>
             </ParticleCard>
           </div>
         </div>

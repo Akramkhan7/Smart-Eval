@@ -1,0 +1,89 @@
+import React, { useState, useEffect, useCallback } from 'react';
+import { 
+    Search, Filter, ChevronDown, CheckCircle, Clock, XOctagon, User, TrendingUp, TrendingDown, RefreshCw, X, FileText, Upload, Settings, Users, Bell, Lock, BookOpen, Layers, Zap, Code, Shield, Menu, List,
+    // FIX: Added missing icons
+    AlertTriangle, Star 
+} from 'lucide-react';
+
+const __app_id = 'assignment-platform-v1';
+const firebaseConfig = {}; // Placeholder
+
+const studentData = [
+    { id: 'S1001', name: 'Alex Johnson', subject: 'Calculus I', assignmentId: 'A-201', score: 92, maxScore: 100, status: 'Completed', submissionDate: '2025-11-25', submissionTime: '10:30 AM', plagiarismPercent: 5, extraDetail: 'High Distinction', teacherId: 'T001' },
+    { id: 'S1002', name: 'Maria Lopez', subject: 'Digital Marketing', assignmentId: 'R-305', score: null, maxScore: 5, status: 'In Review', submissionDate: '2025-11-24', submissionTime: '04:15 PM', plagiarismPercent: 0, extraDetail: 'Draft 1 Received', teacherId: 'T002' },
+    { id: 'S1003', name: 'Chen Wei', subject: 'Data Structures', assignmentId: 'P-112', score: 55, maxScore: 100, status: 'Completed', submissionDate: '2025-11-23', submissionTime: '09:50 AM', plagiarismPercent: 12, extraDetail: 'Requires Resubmission', teacherId: 'T001' },
+    { id: 'S1004', name: 'Rohan Kapoor', subject: 'Econometrics', assignmentId: 'Q-08', score: 65, maxScore: 100, status: 'Completed', submissionDate: '2025-11-20', submissionTime: '11:45 AM', plagiarismPercent: 22, extraDetail: 'High Plagiarism', teacherId: 'T003' },
+    { id: 'S1005', name: 'Kavya Menon', subject: 'Physics Lab Report', assignmentId: 'L-01', score: 4, maxScore: 5, status: 'Completed', submissionDate: '2025-11-18', submissionTime: '06:20 PM', plagiarismPercent: 3, extraDetail: 'Experiment 3', teacherId: 'T002' },
+];
+
+const StudentDashboard = ({ assignments, onDetailsClick }) => {
+    const studentAssignments = assignments.filter(a => a.id.startsWith('S')); 
+    const overallScore = studentAssignments.reduce((sum, a) => sum + (a.score || 0), 0) / studentAssignments.length;
+    const pendingCount = studentAssignments.filter(a => a.status === 'In Review').length;
+
+    return (
+        <div className="p-4 md:p-8 lg:p-10 max-w-7xl mx-auto space-y-8">
+            <h2 className="text-3xl font-bold text-white">Student Dashboard</h2>
+            
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <Card title="Overall Grade Avg" value={overallScore ? `${overallScore.toFixed(1)}%` : 'N/A'} icon={TrendingUp} colorClass="text-green-400" />
+                <Card title="Assignments Pending" value={pendingCount} icon={Clock} colorClass="text-yellow-400" />
+                <Card title="Upload New Assignment" icon={Upload} colorClass="text-indigo-400">
+                    <button className="mt-3 w-full py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-colors flex items-center justify-center">
+                        <Upload className="h-4 w-4 mr-2" /> Select File
+                    </button>
+                </Card>
+            </div>
+
+            {/* Assignment List */}
+            <h3 className="text-2xl font-semibold text-white pt-4 border-t border-gray-800">My Submissions ({studentAssignments.length})</h3>
+            <div className="space-y-4">
+                {studentAssignments.map((student) => {
+                    const isHighPlagiarism = student.plagiarismPercent > 15;
+
+                    return (
+                        <div 
+                            key={student.id + student.assignmentId} 
+                            className="flex justify-between items-center p-4 sm:p-6 rounded-xl border border-gray-800 bg-gray-900/50 shadow-lg cursor-pointer transition-all duration-200 ease-in-out hover:bg-gray-800/80"
+                        >
+                            {/* LEFT SIDE: Info Block */}
+                            <div className="flex items-center space-x-6 w-full">
+                                <div className="flex flex-col min-w-0">
+                                    <div className="text-base font-semibold text-white truncate">{student.subject} ({student.assignmentId})</div>
+                                    <div className="text-sm text-gray-400 truncate flex items-center space-x-2">
+                                        <Clock className="h-3 w-3 text-indigo-400" />
+                                        <span>Submitted: <span className="text-gray-300 font-medium">{student.submissionDate}</span> at <span className="text-gray-300 font-medium">{student.submissionTime}</span></span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {/* RIGHT SIDE: Results Block */}
+                            <div className="flex items-center flex-shrink-0 ml-4 space-x-6">
+                                {/* Status & Marks */}
+                                <div className="flex flex-col items-end mr-4">
+                                    <div className="text-xl font-extrabold text-white">
+                                        {student.score !== null ? `${student.score}/${student.maxScore}` : 'N/A'}
+                                    </div>
+                                    <StatusBadge status={student.status} isHighPlag={isHighPlagiarism} />
+                                    {isHighPlagiarism && <span className='text-xs text-red-400 mt-1'>Plagiarism: {student.plagiarismPercent}%</span>}
+                                </div>
+
+                                {/* More Details Button */}
+                                <button
+                                    onClick={(e) => { e.stopPropagation(); onDetailsClick(student); }}
+                                    className="flex items-center justify-center p-3 rounded-full bg-indigo-600 text-white shadow-md hover:bg-indigo-700 transition-colors"
+                                    title="View detailed feedback"
+                                >
+                                    <FileText className="h-5 w-5" />
+                                </button>
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
+        </div>
+    );
+};
+
+export default StudentDashboard;

@@ -1,23 +1,22 @@
 import React from "react";
-import Header from "./Header";
-import HeroSection from "./HeroSection";
-import Footer from "./Footer";
+import Header from "../components/Home/Headers/NoLoginHeader";
+import HeroSection from "../components/Home/LandingPage";
+import Footer from "../components/Footer/Footer";
 import FloatingAnimate from "../Animations/FloatingAnimate";
-import HeroSection2 from "./HeroSection2";
-import FooterCTASection from "./FooterCTASection";
+import Features from "../components/Home/Features/Features";
+import FooterCTASection from "../components/Footer/FooterCTASection";
+import StudentDashboard from "./Student";
 
 const Home = () => {
   return (
     <div className="relative w-full text-white">
       <FloatingAnimate />
-
       <div className="relative z-10">
         <Header />
         <HeroSection />
-        <HeroSection2 />
+        <Features />
         <Footer />
         <FooterCTASection />
-
         
       </div>
     </div>
