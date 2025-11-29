@@ -15,7 +15,7 @@ export const ToastProvider = ({ children }) => {
   };
 
   return (
-    <ToastContext.Provider value={{showToast}}>
+    <ToastContext.Provider value={{ showToast }}>
       {children}
       {toast && (
         <div

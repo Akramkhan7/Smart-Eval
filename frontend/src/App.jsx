@@ -5,19 +5,22 @@ import Login from "./components/Pages/login";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ToastProvider } from "./context/ToastContext";
 import CyberAuth from "./components/Pages/Register";
+import { AuthProvider } from "./context/AuthContext";
 
 function App() {
   return (
     <>
-      <ToastProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/register" element={<CyberAuth />} />
-            <Route path="/login" element={<Login />} />
-          </Routes>
-        </BrowserRouter>
-      </ToastProvider>
+      <AuthProvider>
+        <ToastProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/register" element={<CyberAuth />} />
+              <Route path="/login" element={<Login />} />
+            </Routes>
+          </BrowserRouter>
+        </ToastProvider>
+      </AuthProvider>
     </>
   );
 }
