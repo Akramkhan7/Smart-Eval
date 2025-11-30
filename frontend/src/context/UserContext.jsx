@@ -2,15 +2,34 @@ import { createContext, useContext, useState, useEffect } from "react";
 
 const UserContext = createContext();
 export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [subjects, setSubjects] = useState([]);
+
+  const allSubjects = async () => {
+    try {
+      const res = await fetch("http://localhost:3000/student/allSubjects", {
+        credentials: "include",
+      });
+      let data = await res.json();
+      if (data.subjects) {
+        data = data.subjects;
+      }
+      if (data) {
+        console.log(data)
+        setSubjects(data);
+      } else {
+        setSubjects(null);
+      }
+    } catch (err) {
+      setSubjects(null);
+    }
+  };
 
   useEffect(() => {
-    const savedUser = localStorage.getItem("user");
-    if (savedUser) setUser(JSON.parse(savedUser));
+    allSubjects();
   }, []);
 
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={{ subjects, setSubjects }}>
       {children}
     </UserContext.Provider>
   );

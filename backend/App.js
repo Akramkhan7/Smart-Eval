@@ -12,6 +12,7 @@ import { userLogin, userRegister } from "./controllers/userLogin.js";
 import studentRoutes from "./routes/userRoutes/student.js";
 import { isLoggedIn } from "./middlewares/isLoggedIn.js";
 import bodyParser from "body-parser";
+import adminRoutes from "./routes/adminRoutes/admin.js";
 env.config();
 conectDB();
 const app = express();
@@ -50,7 +51,9 @@ app.get("/auth/check", isLoggedIn, (req, res) => {
   return res.json({ loggedIn: false });
 });
 
+// redirecting
 app.use("/student", studentRoutes);
+app.use("/admin", adminRoutes);
 
 app.get("/", (req, res) => {
   console.log("This is Home");
