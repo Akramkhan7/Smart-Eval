@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 
 const assignmentSolSchema = new mongoose.Schema({
+  name: String,
+  courseCode: String,
   studentId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Student",
@@ -11,17 +13,32 @@ const assignmentSolSchema = new mongoose.Schema({
     required: true,
   },
   subject: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Subject",
+  },
+  status: {
     type: String,
-    required: true,
+    enum: ["Pending", "Submitted"],
   },
   file: {
     data: Buffer,
     contentType: String,
     fileName: String,
   },
-  uploadedAt: {
+  marks: Number,
+  feedback: String,
+  unlockedDate: {
     type: Date,
-    default: Date.now,
+  },
+  dueDate: {
+    type: Date,
+  },
+  submitDate: {
+    type: Date,
+  },
+  locked: {
+    type: Boolean,
+    default: true,
   },
 });
 

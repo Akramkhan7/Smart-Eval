@@ -1,7 +1,7 @@
 import express from "express";
 import upload from "../../config/multer.js";
 import AssignmentSol from "../../models/assignmentSol.js";
-import Assignments from "../../models/assignments.js";
+import AssignmentBinary from "../../models/assignmentBinary.js";
 import { isLoggedIn } from "../../middlewares/isLoggedIn.js";
 import { createRequire } from "module";
 import subjects from "../../models/subjects.js";
@@ -30,7 +30,7 @@ router.post(
       if (submitted) {
         const rawText = (await pdfParse(req.file.buffer)).text;
 
-        const assignment = await Assignments.create({
+        const assignment = await AssignmentBinary.create({
           studentId: req.user._id,
           fileName: req.file.originalname,
           rawText,
@@ -63,7 +63,7 @@ router.post(
 //assigenment Rendering
 
 router.get("/allSubjects", async (req, res) => {
-  let allSubject = await subjects.find({});
+  let allSubject = await subjects.find({}).populate("assignments");
   res.json({ success: true, subjects: allSubject });
 });
 

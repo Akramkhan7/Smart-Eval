@@ -6,4 +6,4 @@ const AssignmentSchema = new mongoose.Schema({
   uploadedAt: { type: Date, default: Date.now },
 });
 
-export default mongoose.model("Assignment", AssignmentSchema);
+export default mongoose.model("AssignmentBinary", AssignmentSchema);

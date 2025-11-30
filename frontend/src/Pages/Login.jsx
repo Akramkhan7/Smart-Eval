@@ -29,7 +29,7 @@ const Login = () => {
         body: JSON.stringify(form),
       });
     } else if (form.role === "admin") {
-      res = await fetch("http://localhost:3000/teacher/login", {
+      res = await fetch("http://localhost:3000/admin/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

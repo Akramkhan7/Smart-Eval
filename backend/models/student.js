@@ -12,6 +12,7 @@ const studentSchema = new mongoose.Schema({
     type: String,
     default: "Student",
   },
+  
 });
 
 export default mongoose.models.Student || mongoose.model("Student", studentSchema);
