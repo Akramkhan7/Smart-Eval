@@ -9,6 +9,7 @@ import Teacher from "./Pages/Teacher";
 import AuthPage from "./Pages/Register";
 import { AuthProvider } from "./context/AuthContext";
 import TeacherDashboard from "./components/Dashboards/TeacherDashboard";
+import AdminDashboard from "./components/Dashboards/AdminDashboard/AdminDashboard"; // <-- Imported AdminDashboard
 import FloatingAnimate from "./Animations/FloatingAnimate";
 import StudentDashboard from "./Pages/Student";
 
@@ -23,14 +24,9 @@ function App() {
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/teacher" element={<Teacher />} />
-                <Route
-                  path="/student/dashboard"
-                  element={<StudentDashboard />}
-                />
-                <Route
-                  path="/teacher/dashboard"
-                  element={<TeacherDashboard />}
-                />
+                <Route path="/student/dashboard" element={<StudentDashboard />} />
+                <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
+                <Route path="/admin/dashboard" element={<AdminDashboard />} /> {/* <-- Added Admin Route */}
                 <Route path="/register" element={<AuthPage />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/Dashboard" element={<StudentDashboard />} />
