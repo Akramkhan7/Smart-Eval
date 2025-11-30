@@ -192,13 +192,11 @@ const DashBoard = ({ onDetailsClick }) => {
           colorClass="text-yellow-400"
         />
         <Card
-          title="Upload New Assignment"
-          icon={Upload}
+          title="Sumitted Assignment"
+          value={5}
+          icon={Clock}
           colorClass="text-indigo-400"
         >
-          <button className="mt-3 w-full py-2 bg-indigo-600 text-white font-semibold rounded-lg hover:bg-indigo-700 transition-colors flex items-center justify-center">
-            <Upload className="h-4 w-4 mr-2" /> Select File
-          </button>
         </Card>
       </div>
 
@@ -276,6 +274,5 @@ const DashBoard = ({ onDetailsClick }) => {
     </div>
   );
 };
-
 
 export default DashBoard;

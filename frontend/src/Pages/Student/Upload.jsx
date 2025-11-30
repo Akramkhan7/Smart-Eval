@@ -1,28 +1,28 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef } from "react";
 
 const AssignmentUploadForm = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
     files: [],
-    assignment: '',
-    subject: ''
+    assignment: "",
+    subject: "",
   });
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef(null);
 
   // Sample data - replace with your actual data
   const assignments = [
-    { id: '1', name: 'Assignment 1: Introduction to React' },
-    { id: '2', name: 'Assignment 2: State Management' },
-    { id: '3', name: 'Assignment 3: Component Lifecycle' },
-    { id: '4', name: 'Assignment 4: Hooks and Effects' }
+    { id: "1", name: "Assignment 1: Introduction to React" },
+    { id: "2", name: "Assignment 2: State Management" },
+    { id: "3", name: "Assignment 3: Component Lifecycle" },
+    { id: "4", name: "Assignment 4: Hooks and Effects" },
   ];
 
   const subjects = [
-    { id: 'cs101', name: 'Computer Science Fundamentals' },
-    { id: 'webdev', name: 'Web Development' },
-    { id: 'reactjs', name: 'React.js Advanced' },
-    { id: 'nodejs', name: 'Node.js Backend' }
+    { id: "cs101", name: "Computer Science Fundamentals" },
+    { id: "webdev", name: "Web Development" },
+    { id: "reactjs", name: "React.js Advanced" },
+    { id: "nodejs", name: "Node.js Backend" },
   ];
 
   const handleDragOver = (e) => {
@@ -48,61 +48,72 @@ const AssignmentUploadForm = () => {
   };
 
   const handleFiles = (files) => {
-    const newFiles = files.map(file => ({
+    const newFiles = files.map((file) => ({
       id: Math.random().toString(36).substr(2, 9),
       name: file.name,
       size: file.size,
       type: file.type,
-      file: file
+      file: file,
     }));
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      files: [...prev.files, ...newFiles]
+      files: [...prev.files, ...newFiles],
     }));
   };
 
   const removeFile = (id) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      files: prev.files.filter(file => file.id !== id)
+      files: prev.files.filter((file) => file.id !== id),
     }));
   };
 
   const handleInputChange = (field, value) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     // Handle form submission to backend
-    console.log('Form submitted:', formData);
+    console.log("Form submitted:", formData);
+    let res = await fetch("/student/assignment/upload", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+    res  = await res.json();
+    if(res){
+
+    }
     // Add your API call here
   };
 
   const nextStep = () => {
-    setCurrentStep(prev => prev + 1);
+    setCurrentStep((prev) => prev + 1);
   };
 
   const prevStep = () => {
-    setCurrentStep(prev => prev - 1);
+    setCurrentStep((prev) => prev - 1);
   };
 
   const formatFileSize = (bytes) => {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) return "0 Bytes";
     const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const sizes = ["Bytes", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
   };
 
   const getFileIcon = (type) => {
-    if (type.startsWith('image/')) return '🖼️';
-    if (type.startsWith('video/')) return '🎥';
-    if (type.startsWith('audio/')) return '🎵';
-    return '📄';
+    if (type.startsWith("image/")) return "🖼️";
+    if (type.startsWith("video/")) return "🎥";
+    if (type.startsWith("audio/")) return "🎵";
+    return "📄";
   };
 
   return (
@@ -110,8 +121,12 @@ const AssignmentUploadForm = () => {
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white mb-3">Submit Assignment</h1>
-          <p className="text-purple-200">Complete the form to submit your work</p>
+          <h1 className="text-3xl font-bold text-white mb-3">
+            Submit Assignment
+          </h1>
+          <p className="text-purple-200">
+            Complete the form to submit your work
+          </p>
         </div>
 
         {/* Progress Steps */}
@@ -119,34 +134,43 @@ const AssignmentUploadForm = () => {
           <div className="flex items-center space-x-4">
             {[1, 2, 3].map((step) => (
               <div key={step} className="flex items-center">
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 ${
-                  step <= currentStep 
-                    ? 'bg-blue-500 border-blue-500 text-white' 
-                    : 'border-gray-500 text-gray-500'
-                }`}>
+                <div
+                  className={`w-10 h-10 rounded-full flex items-center justify-center border-2 ${
+                    step <= currentStep
+                      ? "bg-blue-500 border-blue-500 text-white"
+                      : "border-gray-500 text-gray-500"
+                  }`}
+                >
                   {step}
                 </div>
                 {step < 3 && (
-                  <div className={`w-12 h-1 ${
-                    step < currentStep ? 'bg-blue-500' : 'bg-gray-500'
-                  }`} />
+                  <div
+                    className={`w-12 h-1 ${
+                      step < currentStep ? "bg-blue-500" : "bg-gray-500"
+                    }`}
+                  />
                 )}
               </div>
             ))}
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 p-8">
+        <form
+          onSubmit={handleSubmit}
+          className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 p-8"
+        >
           {/* Step 1: File Upload */}
           {currentStep === 1 && (
             <div className="space-y-6">
-              <h2 className="text-2xl font-bold text-white mb-6">Upload Your Files</h2>
-              
+              <h2 className="text-2xl font-bold text-white mb-6">
+                Upload Your Files
+              </h2>
+
               <div
                 className={`border-2 border-dashed rounded-xl p-8 text-center transition-all duration-300 cursor-pointer ${
                   isDragging
-                    ? 'border-blue-400 bg-blue-500/20'
-                    : 'border-white/30 hover:border-blue-400 hover:bg-white/5'
+                    ? "border-blue-400 bg-blue-500/20"
+                    : "border-white/30 hover:border-blue-400 hover:bg-white/5"
                 }`}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
@@ -155,8 +179,18 @@ const AssignmentUploadForm = () => {
               >
                 <div className="mb-4">
                   <div className="w-20 h-20 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto mb-4 border border-blue-400/30">
-                    <svg className="w-10 h-10 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    <svg
+                      className="w-10 h-10 text-blue-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                      />
                     </svg>
                   </div>
                   <p className="text-lg font-semibold text-white mb-2">
@@ -189,14 +223,17 @@ const AssignmentUploadForm = () => {
               {/* File Info */}
               <div className="p-4 bg-white/5 rounded-lg border border-white/10">
                 <p className="text-sm text-purple-200 text-center">
-                  Supported: mps/mps/rmov/webm/wav... | Video &lt; 4G, Audio &lt; 500M
+                  Supported: mps/mps/rmov/webm/wav... | Video &lt; 4G, Audio
+                  &lt; 500M
                 </p>
               </div>
 
               {/* Uploaded Files */}
               {formData.files.length > 0 && (
                 <div className="mt-6">
-                  <h3 className="text-lg font-semibold text-white mb-4">Selected Files</h3>
+                  <h3 className="text-lg font-semibold text-white mb-4">
+                    Selected Files
+                  </h3>
                   <div className="space-y-3 max-h-60 overflow-y-auto">
                     {formData.files.map((file) => (
                       <div
@@ -204,7 +241,9 @@ const AssignmentUploadForm = () => {
                         className="flex items-center justify-between p-4 bg-white/5 rounded-lg border border-white/10 hover:bg-white/10 transition-colors"
                       >
                         <div className="flex items-center space-x-3">
-                          <span className="text-2xl">{getFileIcon(file.type)}</span>
+                          <span className="text-2xl">
+                            {getFileIcon(file.type)}
+                          </span>
                           <div>
                             <p className="font-medium text-white truncate max-w-xs">
                               {file.name}
@@ -219,8 +258,18 @@ const AssignmentUploadForm = () => {
                           onClick={() => removeFile(file.id)}
                           className="text-red-400 hover:text-red-300 transition-colors p-2"
                         >
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          <svg
+                            className="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                            />
                           </svg>
                         </button>
                       </div>
@@ -246,19 +295,29 @@ const AssignmentUploadForm = () => {
           {/* Step 2: Assignment & Subject Selection */}
           {currentStep === 2 && (
             <div className="space-y-6">
-              <h2 className="text-2xl font-bold text-white mb-6">Assignment Details</h2>
-              
+              <h2 className="text-2xl font-bold text-white mb-6">
+                Assignment Details
+              </h2>
+
               {/* Subject Selection */}
               <div className="space-y-4">
-                <label className="block text-white font-medium">Select Subject</label>
+                <label className="block text-white font-medium">
+                  Select Subject
+                </label>
                 <select
                   value={formData.subject}
-                  onChange={(e) => handleInputChange('subject', e.target.value)}
+                  onChange={(e) => handleInputChange("subject", e.target.value)}
                   className="w-full bg-white/5 border border-white/20 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
-                  <option value="" className="text-gray-700">Choose a subject</option>
-                  {subjects.map(subject => (
-                    <option key={subject.id} value={subject.id} className="text-gray-700">
+                  <option value="" className="text-gray-700">
+                    Choose a subject
+                  </option>
+                  {subjects.map((subject) => (
+                    <option
+                      key={subject.id}
+                      value={subject.id}
+                      className="text-gray-700"
+                    >
                       {subject.name}
                     </option>
                   ))}
@@ -267,15 +326,25 @@ const AssignmentUploadForm = () => {
 
               {/* Assignment Selection */}
               <div className="space-y-4">
-                <label className="block text-white font-medium">Select Assignment</label>
+                <label className="block text-white font-medium">
+                  Select Assignment
+                </label>
                 <select
                   value={formData.assignment}
-                  onChange={(e) => handleInputChange('assignment', e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange("assignment", e.target.value)
+                  }
                   className="w-full bg-white/5 border border-white/20 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
-                  <option value="" className="text-gray-700">Choose an assignment</option>
-                  {assignments.map(assignment => (
-                    <option key={assignment.id} value={assignment.id} className="text-gray-700">
+                  <option value="" className="text-gray-700">
+                    Choose an assignment
+                  </option>
+                  {assignments.map((assignment) => (
+                    <option
+                      key={assignment.id}
+                      value={assignment.id}
+                      className="text-gray-700"
+                    >
                       {assignment.name}
                     </option>
                   ))}
@@ -306,17 +375,26 @@ const AssignmentUploadForm = () => {
           {/* Step 3: Review & Submit */}
           {currentStep === 3 && (
             <div className="space-y-6">
-              <h2 className="text-2xl font-bold text-white mb-6">Review & Submit</h2>
-              
+              <h2 className="text-2xl font-bold text-white mb-6">
+                Review & Submit
+              </h2>
+
               <div className="space-y-6">
                 {/* Files Summary */}
                 <div className="bg-white/5 rounded-lg p-6 border border-white/10">
-                  <h3 className="text-lg font-semibold text-white mb-4">Files to Upload</h3>
+                  <h3 className="text-lg font-semibold text-white mb-4">
+                    Files to Upload
+                  </h3>
                   <div className="space-y-2">
-                    {formData.files.map(file => (
-                      <div key={file.id} className="flex items-center justify-between text-white">
+                    {formData.files.map((file) => (
+                      <div
+                        key={file.id}
+                        className="flex items-center justify-between text-white"
+                      >
                         <span>{file.name}</span>
-                        <span className="text-purple-200 text-sm">{formatFileSize(file.size)}</span>
+                        <span className="text-purple-200 text-sm">
+                          {formatFileSize(file.size)}
+                        </span>
                       </div>
                     ))}
                   </div>
@@ -324,15 +402,20 @@ const AssignmentUploadForm = () => {
 
                 {/* Assignment Details */}
                 <div className="bg-white/5 rounded-lg p-6 border border-white/10">
-                  <h3 className="text-lg font-semibold text-white mb-4">Assignment Details</h3>
+                  <h3 className="text-lg font-semibold text-white mb-4">
+                    Assignment Details
+                  </h3>
                   <div className="space-y-2 text-white">
                     <div>
-                      <span className="text-purple-200">Subject:</span>{' '}
-                      {subjects.find(s => s.id === formData.subject)?.name}
+                      <span className="text-purple-200">Subject:</span>{" "}
+                      {subjects.find((s) => s.id === formData.subject)?.name}
                     </div>
                     <div>
-                      <span className="text-purple-200">Assignment:</span>{' '}
-                      {assignments.find(a => a.id === formData.assignment)?.name}
+                      <span className="text-purple-200">Assignment:</span>{" "}
+                      {
+                        assignments.find((a) => a.id === formData.assignment)
+                          ?.name
+                      }
                     </div>
                   </div>
                 </div>

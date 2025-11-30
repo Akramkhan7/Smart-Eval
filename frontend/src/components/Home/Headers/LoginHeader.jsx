@@ -42,7 +42,10 @@ const LoginHeader = () => {
           Home
         </Link>
 
-        <Link to="/Dashboard" className="flex items-center gap-1 text-white">
+        <Link
+          to="/student/Dashboard"
+          className="flex items-center gap-1 text-white"
+        >
           <span>DashBoard</span>
         </Link>
       </nav>

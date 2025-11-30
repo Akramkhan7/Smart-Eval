@@ -33,11 +33,8 @@ function App() {
                   element={<TeacherDashboard />}
                 />
                 <Route path="/admin/dashboard" element={<AdminDashboard />} />{" "}
-                {/* <-- Added Admin Route */}
                 <Route path="/register" element={<AuthPage />} />
                 <Route path="/login" element={<Login />} />
-                <Route path="/Dashboard" element={<StudentDashboard />} />
-                {/* <Route path="/StudentDashboard" element={<Student />} /> */}
               </Routes>
             </BrowserRouter>
           </UserProvider>
