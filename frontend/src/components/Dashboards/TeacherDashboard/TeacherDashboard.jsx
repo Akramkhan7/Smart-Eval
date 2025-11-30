@@ -45,7 +45,7 @@ const TeacherDashboard = () => {
     };
 
     return (
-        <div className="relative z-10 bg-gray-950 min-h-screen p-4 md:p-8 lg:p-10 space-y-8 text-white font-sans">
+        <div className="relative z-10  min-h-screen p-4 md:p-8 lg:p-10 space-y-8 text-white font-sans">
             
             {/* Header */}
             <div className="max-w-7xl mx-auto">

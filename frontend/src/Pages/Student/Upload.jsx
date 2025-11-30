@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { data } from "react-router-dom";
 
 const AssignmentUploadForm = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -25,6 +26,35 @@ const AssignmentUploadForm = () => {
     { id: "nodejs", name: "Node.js Backend" },
   ];
 
+const handleUpload = async (e) => {
+  e.preventDefault();
+
+  const formData = new formData();
+    formData.append("title",title);
+    formData.append('description',description);
+    formData.append('uploadedBy',uploadedBy);
+    formData.append('file',file);
+
+
+const response  = await fetch("http://localhost:3000/api/assignments/upload",{
+  method : 'POST',
+  body : formData,
+});
+
+const data  = await response.json();
+
+if(response.ok){
+  alert("Uploaded!");
+  onUploadSuccess();
+  setTitle("");
+  setDescription("");
+  setFile(null);
+}else {
+    alert("Something went wrong.");
+  }
+};
+
+
   const handleDragOver = (e) => {
     e.preventDefault();
     setIsDragging(true);
@@ -46,6 +76,7 @@ const AssignmentUploadForm = () => {
     const files = Array.from(e.target.files);
     handleFiles(files);
   };
+
 
   const handleFiles = (files) => {
     const newFiles = files.map((file) => ({
@@ -117,7 +148,7 @@ const AssignmentUploadForm = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 py-8 px-4">
+    <div className="min-h-screen b  py-8 px-4">
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">

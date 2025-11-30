@@ -9,7 +9,7 @@ const Login = () => {
   const { setUser } = useUser();
   const { showToast } = useToast();
   const [form, setForm] = useState({
-    email: "",
+    enrollmentNumber: "",
     password: "",
     role: "",
   });
@@ -17,14 +17,39 @@ const Login = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-    console.log(form);
-    let res = "";
-    if (form.role === "teacher") {
-      alert("Login Failed as Teacher");
-    } else if (form.role === "admin") {
-      alert("Login Failed as Admin");
-    } else {
-      res = res = await fetch("http://localhost:3000/user/login", {
+
+    const [enrollmentNumber, role] = form;
+
+    // ----- TEACHER LOGIN -----
+    if(role == Teacher){
+       if (enrollmentNumber === "T001" && password === "teacher123") {
+      showToast("Teacher Login Successful", "success");
+      setUser({enrollmentNumber, role});
+      localStorage.setItem("user", JSON.stringify({ enrollmentNumber, role }));
+      navigate("/teacher/dashboard");
+      return;
+       } else {
+      showToast("Invalid Teacher Credentials", "error");
+      return;
+    }
+    }
+
+      // ----- ADMIN LOGIN -----
+    if(role == Admin){
+       if (enrollmentNumber === "T002" && password === "admin123") {
+      showToast("Admin Login Successful", "success");
+      setUser({enrollmentNumber, role});
+      localStorage.setItem("user", JSON.stringify({ enrollmentNumber, role }));
+      navigate("/admin/dashboard");
+      return;
+       } else {
+      showToast("Invalid Amin Credentials", "error");
+      return;
+    }
+    }
+
+
+    let res = await fetch("http://localhost:3000/user/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -32,9 +57,8 @@ const Login = () => {
         credentials: "include",
         body: JSON.stringify(form),
       });
-    }
 
-    res = await res.json();
+   res = await res.json();    
     if (res.messages?.length > 0) {
       const msg = res.messages[0];
       res.success ? showToast(msg, "success") : showToast(msg, "error");
@@ -42,9 +66,13 @@ const Login = () => {
     if (res.success) {
       setUser(res.user);
       localStorage.setItem("user", JSON.stringify(res.user));
-      navigate("/");
+      navigate("/student/dashboard");
     }
   };
+
+
+
+
   return (
     <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden text-white">
       {/* Background Animation */}
@@ -80,13 +108,13 @@ const Login = () => {
             User Login
           </h1>
 
-          {/* Email */}
+          {/* enrollmentNumber */}
           <div className="border-b border-white/40 py-2 flex items-center gap-3">
             <input
-              type="email"
-              placeholder="Email ID"
-              name="email"
-              onChange={(e) => setForm({ ...form, email: e.target.value })}
+              type="enrollmentNumber"
+              placeholder="Enrollment ID"
+              name="enrollmentNumber"
+              onChange={(e) => setForm({ ...form, enrollmentNumber: e.target.value })}
               className="bg-transparent text-white placeholder-white/60 w-full outline-none"
             />
           </div>

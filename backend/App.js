@@ -10,6 +10,8 @@ import env from "dotenv";
 import cookie from "cookie-parser";
 import { userLogin, userRegister } from "./controllers/userLogin.js";
 import userRoutes from "./routes/userRoutes/user.js";
+import assingmentRoutes from './routes/assignmentRoutes.js'
+import mongoose from "mongoose";
 
 env.config();
 
@@ -18,15 +20,18 @@ const app = express();
 conectDB();
 
 //middlwares
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    credentials: true,
-    methods: ["GET", "POST"], // optional but recommended
-    allowedHeaders: ["Content-Type"], // required for fetch
-  })
-);
+// app.use(
+//   cors({
+//     origin: "http://localhost:5173",
+//     credentials: true,
+//     methods: ["GET", "POST"], // optional but recommended
+//     allowedHeaders: ["Content-Type"], // required for fetch
+//   })
+// );
+
 app.use(cookie());
+app.use(cookieParser());
+
 
 app.use(
   session({

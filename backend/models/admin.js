@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
 const adminSchema = new mongoose.Schema({
   name: String,
-  email: {
+  enrollmentNumber: {
     type: String,
     required: true,
-    unique: true,
+    unique: true,    
   },
   password: String,
   role: {
