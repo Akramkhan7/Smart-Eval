@@ -43,7 +43,7 @@ const LoginHeader = () => {
         </Link>
 
         <Link
-          to="/student/Dashboard"
+          to={`/${user.role}/Dashboard`}
           className="flex items-center gap-1 text-white"
         >
           <span>DashBoard</span>

@@ -3,8 +3,9 @@ import upload from "../../config/multer.js";
 import AssignmentSol from "../../models/assignmentSol.js";
 import Assignments from "../../models/assignments.js";
 import { isLoggedIn } from "../../middlewares/isLoggedIn.js";
-import pdfParse from "pdf-parse";
-
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+const pdfParse = require("pdf-parse");
 const router = express.Router();
 
 router.post(

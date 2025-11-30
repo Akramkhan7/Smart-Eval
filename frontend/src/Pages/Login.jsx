@@ -20,11 +20,25 @@ const Login = () => {
     console.log(form);
     let res = "";
     if (form.role === "teacher") {
-      alert("Login Failed as Teacher");
+      res = await fetch("http://localhost:3000/teacher/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(form),
+      });
     } else if (form.role === "admin") {
-      alert("Login Failed as Admin");
+      res = await fetch("http://localhost:3000/teacher/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(form),
+      });
     } else {
-      res = res = await fetch("http://localhost:3000/user/login", {
+      res = await fetch("http://localhost:3000/user/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

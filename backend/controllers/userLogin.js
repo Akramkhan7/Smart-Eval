@@ -1,4 +1,4 @@
-import Students from "../models/Student.js";
+import Students from "../models/student.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import cookie from "cookie-parser";
@@ -79,6 +79,7 @@ export const userLogin = async (req, res) => {
       id: user._id,
       name: user.name,
       email: user.email,
+      role: role,
     },
   });
 };

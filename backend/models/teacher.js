@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
-
-const studentSchema = new mongoose.Schema({
+const teacherSchema = new mongoose.Schema({
   name: String,
   email: {
     type: String,
@@ -10,8 +9,8 @@ const studentSchema = new mongoose.Schema({
   password: String,
   role: {
     type: String,
-    default: "Student",
+    default: "Teacher",
   },
 });
 
-export default mongoose.models.Student || mongoose.model("Student", studentSchema);
+export default mongoose.model("Teacher", teacherSchema);

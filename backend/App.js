@@ -1,8 +1,8 @@
 import express from "express";
 import conectDB from "./config/db.js";
 // import Students from "./models/student.js";
-import admininstrators from "./models/administrator.js";
-import admins from "./models/admin.js";
+// import Admins from "./models/admin.js";
+// import Teachers from "./models/teacher.js";
 import session from "express-session";
 import cors from "cors";
 import flash from "connect-flash";
@@ -51,7 +51,6 @@ app.get("/auth/check", isLoggedIn, (req, res) => {
 });
 
 app.use("/student", studentRoutes);
-
 
 app.get("/", (req, res) => {
   console.log("This is Home");
