@@ -24,9 +24,16 @@ function App() {
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/teacher" element={<Teacher />} />
-                <Route path="/student/dashboard" element={<StudentDashboard />} />
-                <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
-                <Route path="/admin/dashboard" element={<AdminDashboard />} /> {/* <-- Added Admin Route */}
+                <Route
+                  path="/student/dashboard"
+                  element={<StudentDashboard />}
+                />
+                <Route
+                  path="/teacher/dashboard"
+                  element={<TeacherDashboard />}
+                />
+                <Route path="/admin/dashboard" element={<AdminDashboard />} />{" "}
+                {/* <-- Added Admin Route */}
                 <Route path="/register" element={<AuthPage />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/Dashboard" element={<StudentDashboard />} />
