@@ -1,215 +1,132 @@
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '../../../context/AuthContext';
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { BookOpen, User, ArrowRight, GraduationCap } from 'lucide-react';
 
-import { 
-    Upload, Clock, CheckCircle, TrendingUp, 
-    FileText, AlertTriangle
-} from 'lucide-react';
+// --- Dummy Data: Enrolled Subjects ---
+const enrolledSubjects = [
+    { 
+        id: 'SUB-101', 
+        name: 'Operating Systems', 
+        code: 'CS-301', 
+        teacher: 'Dr. Evelyn Sharp', 
+        totalAssignments: 5, 
+        pending: 2, 
+        color: 'hover:border-indigo-500/50',
+        iconColor: 'text-indigo-400'
+    },
+    { 
+        id: 'SUB-102', 
+        name: 'Computer Networks', 
+        code: 'CS-302', 
+        teacher: 'Prof. Mark Webber', 
+        totalAssignments: 4, 
+        pending: 1, 
+        color: 'hover:border-emerald-500/50',
+        iconColor: 'text-emerald-400'
+    },
+    { 
+        id: 'SUB-103', 
+        name: 'Database Management', 
+        code: 'CS-304', 
+        teacher: 'Ms. Chloe Bennet', 
+        totalAssignments: 6, 
+        pending: 0, 
+        color: 'hover:border-yellow-500/50',
+        iconColor: 'text-yellow-400'
+    },
+    { 
+        id: 'SUB-104', 
+        name: 'Artificial Intelligence', 
+        code: 'CS-401', 
+        teacher: 'Dr. Evelyn Sharp', 
+        totalAssignments: 3, 
+        pending: 3, 
+        color: 'hover:border-purple-500/50',
+        iconColor: 'text-purple-400'
+    },
+];
 
 const StudentDashboard = () => {
-    const { user } = useAuth();
-    const [assignments, setAssignments] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
-    useEffect(() => {
-        setTimeout(() => {
-            setAssignments([
-                {
-                    id: 'A001',
-                    subject: 'Calculus I',
-                    assignmentId: 'A-201',
-                    score: 92,
-                    maxScore: 100,
-                    status: 'Completed',
-                    submissionDate: '2025-11-25',
-                    submissionTime: '10:30 AM',
-                    plagiarismPercent: 5
-                },
-                {
-                    id: 'A002',
-                    subject: 'Digital Marketing',
-                    assignmentId: 'R-305',
-                    score: null,
-                    maxScore: 100,
-                    status: 'In Review',
-                    submissionDate: '2025-11-24',
-                    submissionTime: '04:15 PM',
-                    plagiarismPercent: 2
-                },
-                {
-                    id: 'A003',
-                    subject: 'Data Structures',
-                    assignmentId: 'P-112',
-                    score: 55,
-                    maxScore: 100,
-                    status: 'Completed',
-                    submissionDate: '2025-11-23',
-                    submissionTime: '09:50 AM',
-                    plagiarismPercent: 8
-                },
-                {
-                    id: 'A004',
-                    subject: 'Physics',
-                    assignmentId: 'PHY-201',
-                    score: 78,
-                    maxScore: 100,
-                    status: 'Completed',
-                    submissionDate: '2025-11-20',
-                    submissionTime: '02:45 PM',
-                    plagiarismPercent: 12
-                }
-            ]);
-            setLoading(false);
-        }, 500);
-    }, []);
-
-    if (loading) {
-        return (
-            <div className="min-h-screen bg-[#0a0e1a] flex items-center justify-center">
-                <div className="flex flex-col items-center space-y-4">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
-                    <div className="text-white text-xl">Loading your assignments...</div>
-                </div>
-            </div>
-        );
-    }
-
-    const completedAssignments = assignments.filter(a => a.status === 'Completed');
-    const pendingAssignments = assignments.filter(a => a.status === 'In Review');
-    const averageScore = completedAssignments.length > 0
-        ? completedAssignments.reduce((sum, a) => sum + a.score, 0) / completedAssignments.length
-        : 0;
+    const handleSubjectClick = (subjectId) => {
+        // Navigates to the details page (Make sure StudentSubjectDetails route exists)
+        navigate(`/student/subject/${subjectId}`);
+    };
 
     return (
-        <div className="min-h-screen bg-[#0a0e1a] p-4 md:p-8 lg:p-10">
-            <div className="max-w-7xl mx-auto space-y-8">
-                
-                {/* Header */}
+        <div className="relative z-10 bg-gray-950 min-h-screen p-4 md:p-8 lg:p-10 text-white font-sans">
+            
+            {/* Header */}
+            <div className="max-w-6xl mx-auto mb-10 flex flex-col md:flex-row justify-between items-end border-b border-gray-800 pb-6">
                 <div>
-                    <h1 className="text-3xl md:text-4xl font-bold text-white">
-                        Student Dashboard
+                    <h1 className="text-3xl md:text-4xl font-bold text-white mb-2 flex items-center">
+                        <GraduationCap className="h-8 w-8 mr-3 text-indigo-500" />
+                        My Classroom
                     </h1>
+                    <p className="text-gray-400">Select a subject to view assignments and submit work.</p>
                 </div>
-
-                {/* Stats Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {/* Overall Grade */}
-                    <div className="p-6 bg-[#1a1f2e] rounded-2xl border border-gray-800">
-                        <div className="flex items-start justify-between mb-3">
-                            <p className="text-sm font-medium text-gray-400 uppercase tracking-wider">
-                                Overall Grade Avg
-                            </p>
-                            <TrendingUp className="h-5 w-5 text-green-400" />
-                        </div>
-                        <p className="text-4xl font-bold text-white">
-                            {averageScore > 0 ? `${averageScore.toFixed(1)}%` : 'N/A'}
-                        </p>
-                    </div>
-
-                    {/* Assignments Pending */}
-                    <div className="p-6 bg-[#1a1f2e] rounded-2xl border border-gray-800">
-                        <div className="flex items-start justify-between mb-3">
-                            <p className="text-sm font-medium text-gray-400 uppercase tracking-wider">
-                                Assignments Pending
-                            </p>
-                            <Clock className="h-5 w-5 text-yellow-400" />
-                        </div>
-                        <p className="text-4xl font-bold text-white">{pendingAssignments.length}</p>
-                    </div>
-
-                    {/* Upload New Assignment */}
-                    <div className="p-6 bg-[#1a1f2e] rounded-2xl border border-gray-800">
-                        <div className="flex items-start justify-between mb-3">
-                            <p className="text-sm font-medium text-gray-400 uppercase tracking-wider">
-                                Upload New Assignment
-                            </p>
-                            <Upload className="h-5 w-5 text-indigo-400" />
-                        </div>
-                        <button className="w-full mt-2 px-6 py-3 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition-colors flex items-center justify-center">
-                            <Upload className="h-5 w-5 mr-2" />
-                            Select File
-                        </button>
-                    </div>
-                </div>
-
-                {/* Assignments List */}
-                <div>
-                    <h3 className="text-2xl font-bold text-white mb-6">
-                        My Submissions ({assignments.length})
-                    </h3>
-                    <div className="space-y-4">
-                        {assignments.map((assignment) => (
-                            <AssignmentCard key={assignment.id} assignment={assignment} />
-                        ))}
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
-};
-
-// Assignment Card Component
-const AssignmentCard = ({ assignment }) => {
-    const isPending = assignment.status === 'In Review';
-    const isHighPlagiarism = assignment.plagiarismPercent > 15;
-
-    return (
-        <div className="p-6 bg-[#1a1f2e] rounded-2xl border border-gray-800 hover:border-gray-700 transition-all">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                {/* Left: Assignment Info */}
-                <div className="flex-1">
-                    <h4 className="text-xl font-bold text-white mb-2">
-                        {assignment.subject} ({assignment.assignmentId})
-                    </h4>
-                    <div className="flex items-center text-sm text-gray-400">
-                        <Clock className="h-4 w-4 mr-2" />
-                        <span>
-                            Submitted: <span className="text-gray-300 font-medium">{assignment.submissionDate}</span> at{' '}
-                            <span className="text-gray-300 font-medium">{assignment.submissionTime}</span>
-                        </span>
-                    </div>
-                </div>
-
-                {/* Right: Score & Status */}
-                <div className="flex items-center gap-6">
-                    {/* Score */}
-                    <div className="text-right">
-                        <p className="text-3xl font-bold text-white">
-                            {assignment.score !== null ? `${assignment.score}/${assignment.maxScore}` : 'N/A'}
-                        </p>
-                    </div>
-
-                    {/* Status Badge */}
-                    <div className="flex items-center gap-3">
-                        {isPending ? (
-                            <span className="px-4 py-2 text-sm font-semibold rounded-full bg-yellow-500/20 text-yellow-400 flex items-center">
-                                <Clock className="h-4 w-4 mr-2" />
-                                In Review
-                            </span>
-                        ) : (
-                            <span className="px-4 py-2 text-sm font-semibold rounded-full bg-green-500/20 text-green-400 flex items-center">
-                                <CheckCircle className="h-4 w-4 mr-2" />
-                                Completed
-                            </span>
-                        )}
-
-                        {/* View Details Button */}
-                        <button className="p-3 rounded-full bg-indigo-600 text-white hover:bg-indigo-700 transition-colors">
-                            <FileText className="h-5 w-5" />
-                        </button>
-                    </div>
+                <div className="text-right mt-4 md:mt-0">
+                    <p className="text-sm text-gray-500 uppercase tracking-wider">Current Session</p>
+                    <p className="text-xl font-bold text-white">Fall 2025</p>
                 </div>
             </div>
 
-            {/* Plagiarism Warning */}
-            {isHighPlagiarism && (
-                <div className="mt-4 p-3 bg-red-900/20 border border-red-700 rounded-lg flex items-center">
-                    <AlertTriangle className="h-4 w-4 text-red-400 mr-2" />
-                    <p className="text-sm text-red-400">
-                        High plagiarism detected: {assignment.plagiarismPercent}%
-                    </p>
-                </div>
-            )}
+            {/* Subject Grid */}
+            <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {enrolledSubjects.map((subject) => (
+                    <div 
+                        key={subject.id}
+                        onClick={() => handleSubjectClick(subject.id)}
+                        className={`bg-[#1a1f2e] p-6 rounded-2xl border border-gray-800 ${subject.color} hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-300 cursor-pointer group relative overflow-hidden`}
+                    >
+                        {/* Decorative Background Blur */}
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity"></div>
+
+                        {/* Card Content */}
+                        <div className="relative z-10">
+                            
+                            {/* Top Row: Icon & Code */}
+                            <div className="flex justify-between items-start mb-4">
+                                <div className="p-3 bg-gray-900 rounded-xl border border-gray-800 group-hover:border-gray-700 transition-colors">
+                                    <BookOpen className={`h-6 w-6 ${subject.iconColor}`} />
+                                </div>
+                                <span className="px-3 py-1 bg-gray-900 rounded-full text-xs font-semibold text-gray-400 border border-gray-800">
+                                    {subject.code}
+                                </span>
+                            </div>
+
+                            {/* Subject Name */}
+                            <h3 className="text-xl font-bold text-white mb-1 group-hover:text-indigo-400 transition-colors truncate">
+                                {subject.name}
+                            </h3>
+                            
+                            {/* Teacher Name */}
+                            <div className="flex items-center text-sm text-gray-400 mb-6">
+                                <User className="h-3 w-3 mr-2" />
+                                {subject.teacher}
+                            </div>
+
+                            {/* Footer: Stats & Arrow */}
+                            <div className="pt-4 border-t border-gray-800 flex justify-between items-center text-sm">
+                                <div className="flex flex-col">
+                                    <span className="text-gray-500 text-xs uppercase tracking-wider mb-1">Status</span>
+                                    <span className={subject.pending > 0 ? "text-yellow-400 font-medium flex items-center" : "text-green-400 font-medium flex items-center"}>
+                                        {subject.pending > 0 ? (
+                                            <>{subject.pending} Assignments Pending</>
+                                        ) : (
+                                            <>All Caught Up</>
+                                        )}
+                                    </span>
+                                </div>
+                                <div className="bg-gray-900 p-2 rounded-full group-hover:bg-indigo-600 group-hover:text-white transition-colors border border-gray-800 group-hover:border-indigo-500">
+                                    <ArrowRight className="h-4 w-4" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
         </div>
     );
 };
