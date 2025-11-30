@@ -2,10 +2,6 @@ import React, { useState } from "react";
 import { Eye, EyeOff, Lock, User, ArrowRight } from "lucide-react";
 import { useToast } from "../context/ToastContext";
 import { useNavigate } from "react-router-dom";
-
-export default function RegisterPage() {
-  const navigate = useNavigate();
-
 export default function RegisterPage() {
   const navigate = useNavigate();
   const { showToast } = useToast();
@@ -174,3 +170,4 @@ export default function RegisterPage() {
     </div>
   );
 }
+

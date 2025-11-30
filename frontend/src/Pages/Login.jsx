@@ -46,8 +46,9 @@ const Login = () => {
         credentials: "include",
         body: JSON.stringify(form),
       });
+    }
 
-   res = await res.json();    
+    res = await res.json();
     if (res.messages?.length > 0) {
       const msg = res.messages[0];
       res.success ? showToast(msg, "success") : showToast(msg, "error");
@@ -58,9 +59,6 @@ const Login = () => {
       navigate("/student/dashboard");
     }
   };
-
-
-
 
   return (
     <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden text-white">
@@ -103,7 +101,9 @@ const Login = () => {
               type="enrollmentNumber"
               placeholder="Enrollment ID"
               name="enrollmentNumber"
-              onChange={(e) => setForm({ ...form, enrollmentNumber: e.target.value })}
+              onChange={(e) =>
+                setForm({ ...form, enrollmentNumber: e.target.value })
+              }
               className="bg-transparent text-white placeholder-white/60 w-full outline-none"
             />
           </div>
