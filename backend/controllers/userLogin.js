@@ -1,4 +1,4 @@
-import users from "../models/user.js";
+import Students from "../models/Student.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import cookie from "cookie-parser";
@@ -14,7 +14,7 @@ export const userRegister = async (req, res) => {
 
     email = email.toLowerCase();
 
-    let isExist = await users.findOne({ email });
+    let isExist = await Students.findOne({ email });
     if (isExist) {
       req.flash("error", "User Already Exist. Please Login");
       return res.json({ success: false, messages: req.flash("error") });
@@ -22,7 +22,7 @@ export const userRegister = async (req, res) => {
 
     password = await bcrypt.hash(password, 10);
 
-    let user = await users.create({ name, email, password });
+    let user = await Students.create({ name, email, password });
 
     req.flash("success", "User Registered Successfully. Please Login");
     return res.json({ success: true, messages: req.flash("success") });
@@ -46,7 +46,7 @@ export const userLogin = async (req, res) => {
 
   email = email.toLowerCase();
 
-  let user = await users.findOne({ email });
+  let user = await Students.findOne({ email });
   if (!user) {
     req.flash("error", "User does not exist. Please Register First!");
     return res.json({ success: false, messages: req.flash("error") });

@@ -1,6 +1,6 @@
 import express from "express";
 import conectDB from "./config/db.js";
-import users from "./models/user.js";
+// import Students from "./models/student.js";
 import admininstrators from "./models/administrator.js";
 import admins from "./models/admin.js";
 import session from "express-session";
@@ -9,10 +9,9 @@ import flash from "connect-flash";
 import env from "dotenv";
 import cookie from "cookie-parser";
 import { userLogin, userRegister } from "./controllers/userLogin.js";
-import userRoutes from "./routes/userRoutes/user.js";
-
+import studentRoutes from "./routes/userRoutes/student.js";
+import { isLoggedIn } from "./middlewares/isLoggedIn.js";
 env.config();
-
 const app = express();
 // connecting DB
 conectDB();
@@ -21,13 +20,13 @@ conectDB();
 app.use(
   cors({
     origin: "http://localhost:5173",
+    // origin: "http://localhost:3000",
     credentials: true,
     methods: ["GET", "POST"], // optional but recommended
     allowedHeaders: ["Content-Type"], // required for fetch
   })
 );
 app.use(cookie());
-
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -36,15 +35,21 @@ app.use(
     cookie: { secure: false },
   })
 );
-
 app.use(flash());
 app.use(express.json());
-// app.use(express.urlencoded({extends:true}))
 
+//login/register
 app.post("/user/login", userLogin);
 app.post("/user/register", userRegister);
 
-app.use("/auth", userRoutes);
+app.get("/auth/check", isLoggedIn, (req, res) => {
+  if (req.user) {
+    return res.json({ loggedIn: true, user: req.user });
+  }
+  return res.json({ loggedIn: false });
+});
+
+app.use("/student", studentRoutes);
 
 app.get("/", (req, res) => {
   console.log("This is Home");
