@@ -10,6 +10,7 @@ import StudentDashboard from './components/Dashboards/StudentDashboard';
 import AuthPage from "./Pages/Register";
 import { AuthProvider } from "./context/AuthContext";
 import TeacherDashboard from "./components/Dashboards/TeacherDashboard";
+import AdminDashboard from "./components/Dashboards/AdminDashboard/AdminDashboard"; // <-- Imported AdminDashboard
 import FloatingAnimate from "./Animations/FloatingAnimate";
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
                 <Route path="/teacher" element={<Teacher />} />
                 <Route path="/student/dashboard" element={<StudentDashboard />} />
                 <Route path="/teacher/dashboard" element={<TeacherDashboard />} />
+                <Route path="/admin/dashboard" element={<AdminDashboard />} /> {/* <-- Added Admin Route */}
                 <Route path="/register" element={<AuthPage />} />
                 <Route path="/login" element={<Login />} />
               </Routes>
