@@ -11,10 +11,11 @@ import cookie from "cookie-parser";
 import { userLogin, userRegister } from "./controllers/userLogin.js";
 import studentRoutes from "./routes/userRoutes/student.js";
 import { isLoggedIn } from "./middlewares/isLoggedIn.js";
+import bodyParser from "body-parser";
 env.config();
-const app = express();
-// connecting DB
 conectDB();
+const app = express();
+app.use(bodyParser.json({ limit: "5mb" }));
 
 //middlwares
 app.use(
@@ -50,6 +51,7 @@ app.get("/auth/check", isLoggedIn, (req, res) => {
 });
 
 app.use("/student", studentRoutes);
+
 
 app.get("/", (req, res) => {
   console.log("This is Home");
