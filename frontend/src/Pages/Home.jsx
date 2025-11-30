@@ -5,7 +5,7 @@ import HeroSection from "../components/Home/LandingPage";
 import Footer from "../components/Footer/Footer";
 import Features from "../components/Home/Features/Features";
 import FooterCTASection from "../components/Footer/FooterCTASection";
-import StudentDashboard from "./Student";
+import StudentDashboard from "./Student/Student";
 import { AuthContext } from "../context/AuthContext";
 import { useContext } from "react";
 
