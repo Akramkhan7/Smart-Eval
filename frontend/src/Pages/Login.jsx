@@ -17,39 +17,28 @@ const Login = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault();
-
-    const [enrollmentNumber, role] = form;
-
-    // ----- TEACHER LOGIN -----
-    if(role == Teacher){
-       if (enrollmentNumber === "T001" && password === "teacher123") {
-      showToast("Teacher Login Successful", "success");
-      setUser({enrollmentNumber, role});
-      localStorage.setItem("user", JSON.stringify({ enrollmentNumber, role }));
-      navigate("/teacher/dashboard");
-      return;
-       } else {
-      showToast("Invalid Teacher Credentials", "error");
-      return;
-    }
-    }
-
-      // ----- ADMIN LOGIN -----
-    if(role == Admin){
-       if (enrollmentNumber === "T002" && password === "admin123") {
-      showToast("Admin Login Successful", "success");
-      setUser({enrollmentNumber, role});
-      localStorage.setItem("user", JSON.stringify({ enrollmentNumber, role }));
-      navigate("/admin/dashboard");
-      return;
-       } else {
-      showToast("Invalid Amin Credentials", "error");
-      return;
-    }
-    }
-
-
-    let res = await fetch("http://localhost:3000/user/login", {
+    console.log(form);
+    let res = "";
+    if (form.role === "teacher") {
+      res = await fetch("http://localhost:3000/teacher/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(form),
+      });
+    } else if (form.role === "admin") {
+      res = await fetch("http://localhost:3000/admin/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(form),
+      });
+    } else {
+      res = await fetch("http://localhost:3000/user/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

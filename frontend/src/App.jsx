@@ -1,17 +1,27 @@
 import React from "react";
-import Home from "./Pages/Home";
-import Login from "./Pages/Login";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ToastProvider } from "./context/ToastContext";
 import { UserProvider } from "./context/UserContext";
-import HeaderWrapper from "./components/Home/Headers/HeaderWrapper";
-import Teacher from "./Pages/Teacher";
-import AuthPage from "./Pages/Register";
 import { AuthProvider } from "./context/AuthContext";
-import TeacherDashboard from "./components/Dashboards/TeacherDashboard";
-import AdminDashboard from "./components/Dashboards/AdminDashboard/AdminDashboard"; // <-- Imported AdminDashboard
+
+// Pages & Components
+import Home from "./Pages/Home";
+import Login from "./Pages/Login";
+import Register from "./Pages/Register";
+import Teacher from "./Pages/Teacher";
+import HeaderWrapper from "./components/Home/Headers/HeaderWrapper";
+import AuthPage from "./Pages/Register";
+import AdminDashboard from "./components/Dashboards/AdminDashboard/AdminDashboard";
 import FloatingAnimate from "./Animations/FloatingAnimate";
-import StudentDashboard from "./Pages/Student";
+
+// --- Student Dashboard Components ---
+import StudentDashboard from "./components/Dashboards/StudentDashboard/StudentDashboard";
+import StudentSubjectDetails from "./components/Dashboards/StudentDashboard/StudentSubjectDetails";
+import StudentAssignmentUpload from "./components/Dashboards/StudentDashboard/StudentAssignmentUpload";
+
+// --- Teacher Dashboard Components ---
+import TeacherDashboard from "./components/Dashboards/TeacherDashboard/TeacherDashboard";
+import TeacherAssignmentDetails from "./components/Dashboards/TeacherDashboard/TeacherAssignmentDetails";
 
 function App() {
   return (
@@ -22,19 +32,38 @@ function App() {
             <BrowserRouter>
               <FloatingAnimate />
               <Routes>
+                {/* Public Routes */}
                 <Route path="/" element={<Home />} />
-                <Route path="/teacher" element={<Teacher />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+
+                {/* Student Routes */}
                 <Route
                   path="/student/dashboard"
                   element={<StudentDashboard />}
                 />
                 <Route
+                  path="/student/subject/:id"
+                  element={<StudentSubjectDetails />}
+                />
+                <Route
+                  path="/student/subject/:subjectId/assignment/:id"
+                  element={<StudentAssignmentUpload />}
+                />
+
+                {/* Teacher Routes */}
+                <Route path="/teacher" element={<Teacher />} />
+                <Route
                   path="/teacher/dashboard"
                   element={<TeacherDashboard />}
                 />
-                <Route path="/admin/dashboard" element={<AdminDashboard />} />{" "}
-                <Route path="/register" element={<AuthPage />} />
-                <Route path="/login" element={<Login />} />
+                <Route
+                  path="/teacher/assignment/:id"
+                  element={<TeacherAssignmentDetails />}
+                />
+
+                {/* Admin Route */}
+                <Route path="/admin/dashboard" element={<AdminDashboard />} />
               </Routes>
             </BrowserRouter>
           </UserProvider>

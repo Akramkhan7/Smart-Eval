@@ -1,9 +1,8 @@
-import users from "../models/user.js";
+import Students from "../models/student.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import cookie from "cookie-parser";
 import dotenv from "dotenv";
-import Users from "../models/user.js";
 dotenv.config();
 
 export const isLoggedIn = async (req, res, next) => {
@@ -33,5 +32,20 @@ export const isLoggedIn = async (req, res, next) => {
     next();
   } catch (err) {
     return res.json({ success: false, message: "Authorization Failed" });
+    if (!email) {
+      req.flash("error", "Something Wrong with Authorization");
+      return res.json({ success: false, message: req.flash("error") });
+    }
+    let user = await Students.findOne({ email: email });
+    if (!user) {
+      req.flash("error", "Something Wrong with Authorization, User Not Exist");
+      return res.json({ success: false, message: req.flash("error") });
+    }
+    req.user = user;
+    next();
+  } catch (err) {
+    console.log(err);
+    req.flash("error", "Something Wrong In Autorization Processing");
+    return res.json({ success: false, message: req.flash("error") });
   }
 };

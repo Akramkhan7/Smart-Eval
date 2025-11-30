@@ -9,8 +9,8 @@ const adminSchema = new mongoose.Schema({
   password: String,
   role: {
     type: String,
-    default: "Teacher",
+    default: "Admin",
   },
 });
 
-export default mongoose.model("admin", adminSchema);
+export default mongoose.model("Admin", adminSchema);
