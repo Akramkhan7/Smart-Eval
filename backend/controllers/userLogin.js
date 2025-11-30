@@ -12,8 +12,6 @@ export const userRegister = async (req, res) => {
     if (!name || !enrollmentNumber || !password)
       return res.json({ success: false, messages: ["Enter All Details"] });
 
-    
-
     let isExist = await Students.findOne({ enrollmentNumber });
     if (isExist) {
       req.flash("error", "User Already Exist. Please Login");

@@ -23,23 +23,23 @@ export default function RegisterPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     let res = "";
-    if (form.role === "teacher") {
+    if (formData.role === "teacher") {
       res = await fetch("http://localhost:3000/teacher/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify(form),
+        body: JSON.stringify(formData),
       });
-    } else if (form.role === "admin") {
+    } else if (formData.role === "admin") {
       res = await fetch("http://localhost:3000/admin/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify(form),
+        body: JSON.stringify(formData),
       });
     } else {
       res = await fetch("http://localhost:3000/user/register", {
@@ -99,7 +99,7 @@ export default function RegisterPage() {
                   name="enrollmentNumber"
                   value={formData.enrollmentNumber}
                   onChange={handleChange}
-                  placeholder="Email Address"
+                  placeholder="Enrollment Number"
                   className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-2xl focus:ring-2 focus:ring-purple-500"
                   required
                 />
@@ -170,4 +170,3 @@ export default function RegisterPage() {
     </div>
   );
 }
-

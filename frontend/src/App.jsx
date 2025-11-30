@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ToastProvider } from "./context/ToastContext";
 import { UserProvider } from "./context/UserContext";
 import { AuthProvider } from "./context/AuthContext";
+import { AdminProvider } from "./context/AdminContext";
 
 // Pages & Components
 import Home from "./Pages/Home";
@@ -26,49 +27,47 @@ import TeacherAssignmentDetails from "./components/Dashboards/TeacherDashboard/T
 function App() {
   return (
     <>
-      <AuthProvider>
-        <ToastProvider>
-          <UserProvider>
-            <BrowserRouter>
-              <FloatingAnimate />
-              <Routes>
-                {/* Public Routes */}
-                <Route path="/" element={<Home />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
+      <AdminProvider>
+        <AuthProvider>
+          <ToastProvider>
+            <UserProvider>
+              <BrowserRouter>
+                <FloatingAnimate />
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
 
-                {/* Student Routes */}
-                <Route
-                  path="/student/dashboard"
-                  element={<StudentDashboard />}
-                />
-                <Route
-                  path="/student/subject/:id"
-                  element={<StudentSubjectDetails />}
-                />
-                <Route
-                  path="/student/subject/:subjectId/assignment/:id"
-                  element={<StudentAssignmentUpload />}
-                />
+                  <Route
+                    path="/student/dashboard"
+                    element={<StudentDashboard />}
+                  />
+                  <Route
+                    path="/student/subject/:id"
+                    element={<StudentSubjectDetails />}
+                  />
+                  <Route
+                    path="/student/subject/:subjectId/assignment/:id"
+                    element={<StudentAssignmentUpload />}
+                  />
 
-                {/* Teacher Routes */}
-                <Route path="/teacher" element={<Teacher />} />
-                <Route
-                  path="/teacher/dashboard"
-                  element={<TeacherDashboard />}
-                />
-                <Route
-                  path="/teacher/assignment/:id"
-                  element={<TeacherAssignmentDetails />}
-                />
+                  <Route path="/teacher" element={<Teacher />} />
+                  <Route
+                    path="/teacher/dashboard"
+                    element={<TeacherDashboard />}
+                  />
+                  <Route
+                    path="/teacher/assignment/:id"
+                    element={<TeacherAssignmentDetails />}
+                  />
 
-                {/* Admin Route */}
-                <Route path="/admin/dashboard" element={<AdminDashboard />} />
-              </Routes>
-            </BrowserRouter>
-          </UserProvider>
-        </ToastProvider>
-      </AuthProvider>
+                  <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                </Routes>
+              </BrowserRouter>
+            </UserProvider>
+          </ToastProvider>
+        </AuthProvider>
+      </AdminProvider>
     </>
   );
 }

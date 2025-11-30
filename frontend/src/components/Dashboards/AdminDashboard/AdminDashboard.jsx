@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Users,
   User,
@@ -14,6 +14,7 @@ import {
   Edit3,
 } from "lucide-react";
 import Card from "../Shared/Card";
+import { useAdmin } from "../../../context/AdminContext";
 
 // --- Dummy Data ---
 const adminStats = {
@@ -76,8 +77,8 @@ const initialUsers = [
   },
 ];
 
-// New data for subjects and allocations
-const initialSubjects = [
+// New data for subjectsData and allocations
+const initialsubjectsData = [
   { id: "MATH-101", name: "Calculus I", code: "MATH101", credits: 3 },
   { id: "CS-205", name: "Data Structures", code: "CS205", credits: 4 },
   { id: "PHY-101", name: "Physics Fundamentals", code: "PHY101", credits: 3 },
@@ -109,13 +110,28 @@ const initialAllocations = [
 ];
 
 const AdminDashboard = () => {
+  const [subjectsData, setsubjectsData] = useState([]);
+  const [teacherData, setTeachersData] = useState([]);
+
+  const { subjects, teachers } = useAdmin();
+
+  useEffect(() => {
+    if (subjects) {
+      setsubjectsData(subjects);
+    }
+    if (teachers) {
+      setTeachersData(teachers);
+      console.log(teacherData);
+    }
+  }, [subjects, teachers]);
+
   const [announcementText, setAnnouncementText] = useState("");
   const [userToBlock, setUserToBlock] = useState("");
   const [users, setUsers] = useState(initialUsers);
   const [announcements, setAnnouncements] = useState(initialAnnouncements);
 
   // New states for subject management
-  const [subjects, setSubjects] = useState(initialSubjects);
+
   const [allocations, setAllocations] = useState(initialAllocations);
   const [newSubject, setNewSubject] = useState({
     name: "",
@@ -126,7 +142,17 @@ const AdminDashboard = () => {
     teacherId: "",
     subjectId: "",
   });
-  const [activeTab, setActiveTab] = useState("overview"); // 'overview', 'subjects', 'allocations'
+  // useEffect(async () => {
+  //   let res = await fetch("http://localhost:3000/admin/addAllocation", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify(newAllocation),
+  //   });
+  //   res = await res.json();
+  // }, [newAllocation]);
+  const [activeTab, setActiveTab] = useState("overview"); // 'overview', 'subjectsData', 'allocations'
 
   // Handle Posting Announcement
   const handleAnnouncement = () => {
@@ -200,7 +226,7 @@ const AdminDashboard = () => {
     setAllocations(updatedAllocations);
 
     // Remove subject
-    setSubjects(subjects.filter((subject) => subject.id !== id));
+    setsubjectsData(subjectsData.filter((subject) => subject.id !== id));
     alert("Subject deleted successfully!");
   };
 
@@ -209,7 +235,9 @@ const AdminDashboard = () => {
       const teacher = users.find(
         (u) => u.id === newAllocation.teacherId && u.role === "Teacher"
       );
-      const subject = subjects.find((s) => s.id === newAllocation.subjectId);
+      const subject = subjectsData.find(
+        (s) => s.id === newAllocation.subjectId
+      );
 
       if (teacher && subject) {
         // Check if allocation already exists
@@ -274,14 +302,14 @@ const AdminDashboard = () => {
               Overview
             </button>
             <button
-              onClick={() => setActiveTab("subjects")}
+              onClick={() => setActiveTab("subjectsData")}
               className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                activeTab === "subjects"
+                activeTab === "subjectsData"
                   ? "bg-indigo-600 text-white"
                   : "text-gray-400 hover:text-white"
               }`}
             >
-              Subjects
+              subjectsData
             </button>
             <button
               onClick={() => setActiveTab("allocations")}
@@ -412,9 +440,9 @@ const AdminDashboard = () => {
                 </h4>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div className="bg-gray-950/30 p-3 rounded-lg border border-gray-800">
-                    <div className="text-gray-400">Total Subjects</div>
+                    <div className="text-gray-400">Total subjectsData</div>
                     <div className="text-white font-semibold">
-                      {subjects.length}
+                      {subjectsData.length}
                     </div>
                   </div>
                   <div className="bg-gray-950/30 p-3 rounded-lg border border-gray-800">
@@ -515,8 +543,8 @@ const AdminDashboard = () => {
         </>
       )}
 
-      {/* Subjects Tab Content */}
-      {activeTab === "subjects" && (
+      {/* subjectsData Tab Content */}
+      {activeTab === "subjectsData" && (
         <div className="max-w-7xl mx-auto space-y-6">
           {/* Add Subject Panel */}
           <div className="bg-gray-900/50 p-6 rounded-xl border border-gray-800 backdrop-blur-sm">
@@ -563,11 +591,11 @@ const AdminDashboard = () => {
             </button>
           </div>
 
-          {/* Subjects List */}
+          {/* subjectsData List */}
           <div className="bg-gray-900/50 rounded-xl border border-gray-800 shadow-xl">
             <div className="p-6 border-b border-gray-800">
               <h3 className="text-2xl font-semibold text-white">
-                All Subjects ({subjects.length})
+                All subjectsData ({subjectsData.length})
               </h3>
             </div>
             <div className="overflow-hidden">
@@ -589,20 +617,20 @@ const AdminDashboard = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-800">
-                  {subjects.map((subject) => (
+                  {subjectsData.map((subject) => (
                     <tr
                       key={subject.id}
                       className="hover:bg-gray-800/40 transition-colors"
                     >
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">
-                        {subject.code}
+                        {subject.courseCode}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
                         {subject.name}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
                         <span className="px-2.5 py-0.5 inline-flex text-xs font-semibold rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">
-                          {subject.credits} Credits
+                          {subject.credit} Credits
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-right">
@@ -645,13 +673,13 @@ const AdminDashboard = () => {
                 <option value="" className="text-gray-700">
                   Select Teacher
                 </option>
-                {availableTeachers.map((teacher) => (
+                {teacherData.map((teacher) => (
                   <option
-                    key={teacher.id}
-                    value={teacher.id}
+                    key={teacher._id}
+                    value={teacher.enrollmentNumber}
                     className="text-gray-700"
                   >
-                    {teacher.name} ({teacher.id})
+                    {teacher.name} ({teacher.enrollmentNumber})
                   </option>
                 ))}
               </select>
@@ -668,13 +696,13 @@ const AdminDashboard = () => {
                 <option value="" className="text-gray-700">
                   Select Subject
                 </option>
-                {subjects.map((subject) => (
+                {subjectsData.map((subject) => (
                   <option
-                    key={subject.id}
-                    value={subject.id}
+                    key={subject._id}
+                    value={subject._id}
                     className="text-gray-700"
                   >
-                    {subject.name} ({subject.code})
+                    {subject.name} ({subject.courseCode})
                   </option>
                 ))}
               </select>

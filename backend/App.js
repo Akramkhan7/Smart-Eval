@@ -7,13 +7,13 @@ import session from "express-session";
 import cors from "cors";
 import flash from "connect-flash";
 import env from "dotenv";
-import cookie from "cookie-parser";
+import cookieParser from "cookie-parser";
 import { userLogin, userRegister } from "./controllers/userLogin.js";
+import { teacherLogin, teacherRegister } from "./controllers/adminLogin.js";
 import studentRoutes from "./routes/userRoutes/student.js";
 import { isLoggedIn } from "./middlewares/isLoggedIn.js";
 import bodyParser from "body-parser";
 import adminRoutes from "./routes/adminRoutes/admin.js";
-import assingmentRoutes from './routes/assignmentRoutes.js'
 import mongoose from "mongoose";
 env.config();
 conectDB();
@@ -39,9 +39,7 @@ app.use(
 //   })
 // );
 
-app.use(cookie());
 app.use(cookieParser());
-
 
 app.use(
   session({
@@ -54,9 +52,12 @@ app.use(
 app.use(flash());
 app.use(express.json());
 
-//login/register
+//User login/register
 app.post("/user/login", userLogin);
 app.post("/user/register", userRegister);
+//Teacher login/register
+app.post("/teacher/login", teacherLogin);
+app.post("/teacher/register", teacherRegister);
 
 app.get("/auth/check", isLoggedIn, (req, res) => {
   if (req.user) {

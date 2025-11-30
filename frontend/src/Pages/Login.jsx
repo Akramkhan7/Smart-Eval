@@ -52,11 +52,7 @@ const Login = () => {
     if (res.messages?.length > 0) {
       const msg = res.messages[0];
       res.success ? showToast(msg, "success") : showToast(msg, "error");
-    }
-    if (res.success) {
-      setUser(res.user);
-      localStorage.setItem("user", JSON.stringify(res.user));
-      navigate("/student/dashboard");
+      navigate(`/${form.role}/dashboard`);
     }
   };
 

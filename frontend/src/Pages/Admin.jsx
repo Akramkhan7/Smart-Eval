@@ -28,12 +28,7 @@ import {
   AlertTriangle,
   Star,
 } from "lucide-react";
-
-// --- Global Constants & Dummy Data ---
-
-// Simulate user ID/App ID setup for Firestore (even though we're not connecting here)
-const __app_id = "assignment-platform-v1";
-const firebaseConfig = {}; // Placeholder
+import { useAdmin } from "../context/AdminContext";
 
 // Dummy Data for Demonstration
 const studentData = [
@@ -134,7 +129,7 @@ const teacherData = [
 ];
 
 const adminData = {
-  totalStudents: 1500,
+  totalStudents: 1700,
   totalTeachers: 45,
   pendingEnrollments: 8,
   systemStatus: "Operational",
@@ -160,6 +155,8 @@ const announcements = [
 // --- Utility Components ---
 
 const StatusBadge = ({ status, isHighPlag = false }) => {
+ 
+
   let colorClass = "bg-gray-700 text-gray-300";
   let icon = Clock;
 
@@ -983,38 +980,6 @@ const App = () => {
       `Feedback submitted and assignment ${assignmentId} finalized! Score: ${feedback.score}`
     );
   }, []);
-
-  const renderDashboard = () => {
-    switch (currentRole) {
-      case "Student":
-        return (
-          <StudentDashboard
-            assignments={assignments}
-            onDetailsClick={setSelectedAssignment}
-          />
-        );
-      case "Teacher":
-        return (
-          <TeacherDashboard
-            assignments={assignments}
-            teachers={teacherData}
-            onDetailsClick={setSelectedAssignment}
-            onSubmitFeedback={handleSubmitFeedback}
-          />
-        );
-      case "Admin":
-        return (
-          <AdminDashboard
-            data={adminData}
-            teachers={teacherData}
-            students={assignments}
-            onDetailsClick={setSelectedAssignment}
-          />
-        );
-      default:
-        return <div className="p-8 text-white">Please select a role.</div>;
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gray-950 font-sans">

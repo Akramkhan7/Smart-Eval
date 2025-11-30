@@ -17,17 +17,17 @@ export const isLoggedIn = async (req, res, next) => {
     let decoded = await jwt.verify(token, process.env.JWT_SECRET);
     let enrollmentNumber = decoded.enrollmentNumber;
 
-      let user;
-      if(enrollmentNumber === 'T002'){
-        user = {enrollmentNumber : 'T002' , role: "admin" };
-      }else if(enrollmentNumber === 'T001'){
-        user = {enrollmentNumber : 'T001' , role: "teacher" };
-      }else{
-        user = await Users.find({enrollmentNumber});
-        if(!user){
-           return res.json({ success: false, message: "User Not Exist" });
-        }
+    let user;
+    if (enrollmentNumber === "T002") {
+      user = { enrollmentNumber: "T002", role: "admin" };
+    } else if (enrollmentNumber === "T001") {
+      user = { enrollmentNumber: "T001", role: "teacher" };
+    } else {
+      user = await Users.find({ enrollmentNumber });
+      if (!user) {
+        return res.json({ success: false, message: "User Not Exist" });
       }
+    }
     req.user = user;
     next();
   } catch (err) {
@@ -43,9 +43,5 @@ export const isLoggedIn = async (req, res, next) => {
     }
     req.user = user;
     next();
-  } catch (err) {
-    console.log(err);
-    req.flash("error", "Something Wrong In Autorization Processing");
-    return res.json({ success: false, message: req.flash("error") });
   }
 };

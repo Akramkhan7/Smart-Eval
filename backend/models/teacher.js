@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 const teacherSchema = new mongoose.Schema({
   name: String,
-  email: {
+  enrollmentNumber: {
     type: String,
     required: true,
     unique: true,
@@ -11,6 +11,15 @@ const teacherSchema = new mongoose.Schema({
     type: String,
     default: "Teacher",
   },
+  subjectsAlloted: {
+    type: String,
+    default: "No Subject Alloted",
+  },
+  sectionsAlloted: {
+    type: String,
+    default: "No Subject Alloted",
+  },
 });
 
-export default mongoose.model("Teacher", teacherSchema);
+export default mongoose.models.Teacher ||
+  mongoose.model("Teacher", teacherSchema);
