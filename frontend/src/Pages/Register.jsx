@@ -65,10 +65,10 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br  flex items-center justify-center p-4 relative overflow-hidden">
       {/* Main card */}
       <div className="relative w-full max-w-md">
-        <div className="bg-white/95 backdrop-blur-lg rounded-3xl shadow-2xl overflow-hidden">
+        <div className="border backdrop-blur-lg rounded-3xl shadow-2xl overflow-hidden">
           <div className="px-8 py-10">
             <div className="text-center mb-8">
               <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">

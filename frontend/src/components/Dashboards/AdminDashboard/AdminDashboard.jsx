@@ -110,43 +110,28 @@ const initialAllocations = [
 ];
 
 const AdminDashboard = () => {
+  // 1. Get all data from Context (including students)
+  const { subjects, teachers, students } = useAdmin();
+
+  // 2. Local State
   const [subjectsData, setsubjectsData] = useState([]);
   const [teacherData, setTeachersData] = useState([]);
   const [allocations, setAllocations] = useState([]);
-
-  const { subjects, teachers } = useAdmin();
-
-  useEffect(() => {
-    if (subjects) {
-      setsubjectsData(subjects);
-      const newAllocations = [];
-
-      subjects.forEach((subject) => {
-        if (subject.allotedTeacher) {
-          newAllocations.push({
-            id: subject._id, // or some unique id
-            teacherId: subject.allotedTeacher._id,
-            teacherName: subject.allotedTeacher.name,
-            subjectId: subject.courseCode,
-            subjectName: subject.name,
-          });
-        }
-      });
-
-      setAllocations(newAllocations);
-    }
-    if (teachers) {
-      setTeachersData(teachers);
-      console.log(teacherData);
-    }
-  }, [subjects, teachers]);
+  
+  // Dynamic User List (Replaces hardcoded data)
+  const [users, setUsers] = useState([]); 
+  
+  // Dynamic Stats (Replaces static stats)
+  const [stats, setStats] = useState({
+    totalStudents: 0,
+    totalTeachers: 0,
+    pendingEnrollments: 0, 
+    systemStatus: "Operational",
+  });
 
   const [announcementText, setAnnouncementText] = useState("");
   const [userToBlock, setUserToBlock] = useState("");
-  const [users, setUsers] = useState(initialUsers);
   const [announcements, setAnnouncements] = useState(initialAnnouncements);
-
-  // New states for subject management
 
   const [newSubject, setNewSubject] = useState({
     name: "",
@@ -158,10 +143,76 @@ const AdminDashboard = () => {
     subjectId: "",
   });
 
-  // Allocation
-  const [activeTab, setActiveTab] = useState("overview"); // 'overview', 'subjectsData', 'allocations'
+  const [activeTab, setActiveTab] = useState("overview");
 
-  // Handle Posting Announcement
+  // 3. MAIN EFFECT: Process Data when Context loads
+  useEffect(() => {
+    // A. Handle Subjects & Allocations
+    if (subjects) {
+      setsubjectsData(subjects);
+      const newAllocations = [];
+      subjects.forEach((subject) => {
+        if (subject.allotedTeacher) {
+          // Handle both object and array cases for safety
+          const teacherObj = Array.isArray(subject.allotedTeacher) 
+            ? subject.allotedTeacher[0] 
+            : subject.allotedTeacher;
+
+          if (teacherObj) {
+            newAllocations.push({
+              id: subject._id,
+              teacherId: teacherObj._id,
+              teacherName: teacherObj.name,
+              subjectId: subject.courseCode,
+              subjectName: subject.name,
+            });
+          }
+        }
+      });
+      setAllocations(newAllocations);
+    }
+
+    // B. Handle Teachers (for dropdown)
+    if (teachers) {
+      setTeachersData(teachers);
+    }
+
+    // C. Handle Overview Data (Merge Teachers + Students)
+    if (teachers || students) {
+      // Format Teachers
+      const formattedTeachers = (teachers || []).map((t) => ({
+        id: t._id, // Mongo ID
+        displayId: t.enrollmentNumber, // What we show in table
+        name: t.name,
+        role: "Teacher",
+        email: t.email || "N/A",
+        status: "Active",
+      }));
+
+      // Format Students
+      const formattedStudents = (students || []).map((s) => ({
+        id: s._id,
+        displayId: s.enrollmentNumber,
+        name: s.name,
+        role: "Student",
+        email: s.email || "N/A",
+        status: "Active",
+      }));
+
+      // Set Table Data
+      setUsers([...formattedTeachers, ...formattedStudents]);
+
+      // Set Stats
+      setStats((prev) => ({
+        ...prev,
+        totalStudents: students?.length || 0,
+        totalTeachers: teachers?.length || 0,
+      }));
+    }
+  }, [subjects, teachers, students]);
+
+  // --- HANDLERS ---
+
   const handleAnnouncement = () => {
     if (announcementText.trim()) {
       const newAnnouncement = {
@@ -175,19 +226,6 @@ const AdminDashboard = () => {
     }
   };
 
-  // Handle Blocking/Unblocking Logic
-  const handleAction = (actionType) => {
-    if (!userToBlock) return;
-
-    // In a real app, you would verify the ID exists here
-    alert(
-      `User ${userToBlock} has been ${
-        actionType === "block" ? "BLOCKED" : "UNBLOCKED"
-      } successfully.`
-    );
-    setUserToBlock("");
-  };
-
   const toggleUserStatus = (id) => {
     setUsers(
       users.map((user) =>
@@ -198,10 +236,8 @@ const AdminDashboard = () => {
     );
   };
 
-  // New functions for subject management
- const addSubject = async () => {
+  const addSubject = async () => {
     if (newSubject.name && newSubject.code && newSubject.credits) {
-      // 1. Prepare data for Backend (using your form field names)
       const subjectPayload = {
         name: newSubject.name,
         code: newSubject.code.toUpperCase(),
@@ -211,29 +247,21 @@ const AdminDashboard = () => {
       try {
         let res = await fetch("http://localhost:3000/admin/addSubject", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(subjectPayload),
         });
         
         const data = await res.json();
 
         if (data.success) {
-          // 2. Prepare data for Frontend State (Matching your Table structure)
-          // Your table uses 'courseCode' and 'credit', so we map them here.
           const newSubjectForState = {
-            id: data.data?._id || Date.now(), // Use real ID from backend if available, else temp ID
+            id: data.data?._id || Date.now(),
             _id: data.data?._id || Date.now(), 
             name: newSubject.name,
-            courseCode: newSubject.code.toUpperCase(), // Mapping 'code' to 'courseCode'
-            credit: parseInt(newSubject.credits)       // Mapping 'credits' to 'credit'
+            courseCode: newSubject.code.toUpperCase(),
+            credit: parseInt(newSubject.credits)
           };
-
-          // 3. Update the list immediately without reload
           setsubjectsData((prev) => [...prev, newSubjectForState]);
-
-          // 4. Clear form
           setNewSubject({ name: "", code: "", credits: "" });
           alert("Subject added successfully!");
         } else {
@@ -241,8 +269,8 @@ const AdminDashboard = () => {
           alert("Something Wrong!");
         }
       } catch (error) {
-        console.error("Error adding subject:", error);
-        alert("Server error, please try again.");
+        console.error(error);
+        alert("Server error");
       }
     } else {
       alert("Please fill in all subject fields.");
@@ -250,45 +278,26 @@ const AdminDashboard = () => {
   };
 
   const deleteSubject = (id) => {
-    // Remove allocations for this subject first (Frontend only)
-    const updatedAllocations = allocations.filter(
-      (allocation) => allocation.subjectId !== id
-    );
+    const updatedAllocations = allocations.filter((a) => a.subjectId !== id);
     setAllocations(updatedAllocations);
-
-    // Remove subject from the list (Frontend only)
-    setsubjectsData((prev) => prev.filter((subject) => subject.id !== id && subject._id !== id));
+    setsubjectsData((prev) => prev.filter((s) => s.id !== id && s._id !== id));
     alert("Subject deleted successfully!");
-    
-    // TODO: You should also make a fetch DELETE request here to remove it from the database permanently
   };
-const addAllocation = async () => {
-    // 1. Validate selection
+
+  const addAllocation = async () => {
     if (!newAllocation.teacherId || !newAllocation.subjectId) {
       alert("Please select both a Teacher and a Subject.");
       return;
     }
 
-    console.log("Searching for:", newAllocation); // Debug Log
-
-    // 2. Find using STRING comparison to fix the "Number vs String" bug
-    const teacher = teacherData.find(
-      (t) => String(t._id) === String(newAllocation.teacherId)
-    );
-    const subject = subjectsData.find(
-      (s) => String(s._id) === String(newAllocation.subjectId)
-    );
-
-    console.log("Found:", { teacher, subject }); // Debug Log
+    const teacher = teacherData.find((t) => String(t._id) === String(newAllocation.teacherId));
+    const subject = subjectsData.find((s) => String(s._id) === String(newAllocation.subjectId));
 
     if (teacher && subject) {
       try {
-        // 3. Send request to Backend
         let res = await fetch("http://localhost:3000/admin/allocation", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             teacherId: newAllocation.teacherId,
             subjectId: newAllocation.subjectId,
@@ -298,7 +307,6 @@ const addAllocation = async () => {
         const data = await res.json();
 
         if (data.success) {
-          // 4. Update the Table UI
           const newAllocationEntry = {
             id: Date.now(),
             teacherId: teacher._id,
@@ -306,7 +314,6 @@ const addAllocation = async () => {
             subjectId: subject.courseCode, 
             subjectName: subject.name,
           };
-
           setAllocations((prev) => [...prev, newAllocationEntry]);
           setNewAllocation({ teacherId: "", subjectId: "" });
           alert(data.message);
@@ -314,19 +321,17 @@ const addAllocation = async () => {
           alert(data.message);
         }
       } catch (error) {
-        console.error("Allocation Error:", error);
-        alert("Server error. Check if backend is running.");
+        console.error(error);
+        alert("Server error.");
       }
     } else {
-      // This will now show you EXACTLY what is failing in the console
-      console.error("Mismatch Debug:", {
-        lookingForTeacher: newAllocation.teacherId,
-        lookingForSubject: newAllocation.subjectId,
-        availableTeachers: teacherData,
-        availableSubjects: subjectsData
-      });
-      alert("Error: Selected teacher or subject not found in list (Check Console for details).");
+      alert("Error: Selected teacher or subject not found.");
     }
+  };
+
+  const deleteAllocation = (id) => {
+    setAllocations(allocations.filter((allocation) => allocation.id !== id));
+    alert("Allocation removed successfully!");
   };
   return (
     <div className="relative z-10 bg-gray-950 min-h-screen p-4 md:p-8 lg:p-10 space-y-8 text-white font-sans">
@@ -385,31 +390,32 @@ const addAllocation = async () => {
           <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-6">
             <Card
               title="Total Students"
-              value={adminStats.totalStudents}
+              value={stats.totalStudents} 
               icon={Users}
               colorClass="text-indigo-400"
             />
             <Card
               title="Total Teachers"
-              value={adminStats.totalTeachers}
+              value={stats.totalTeachers} 
               icon={User}
               colorClass="text-green-400"
             />
             <Card
               title="Pending Enrollments"
-              value={adminStats.pendingEnrollments}
+              value={stats.pendingEnrollments}
               icon={Clock}
               colorClass="text-yellow-400"
             />
             <Card
               title="System Status"
-              value={adminStats.systemStatus}
+              value={stats.systemStatus}
               icon={Settings}
               colorClass="text-emerald-400"
             />
           </div>
 
           {/* Registered Users Table */}
+         
           <div className="max-w-7xl mx-auto">
             <h3 className="text-2xl font-semibold text-white pt-4 border-t border-gray-800 mb-6">
               User Database ({users.length})
@@ -427,9 +433,7 @@ const addAllocation = async () => {
                     <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">
                       ID
                     </th>
-                    <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">
-                      Email
-                    </th>
+                    {/* EMAIL HEADER REMOVED */}
                     <th className="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">
                       Status
                     </th>
@@ -459,11 +463,9 @@ const addAllocation = async () => {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-xs text-gray-500">
-                        {user.id}
+                        {user.displayId}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
-                        {user.email}
-                      </td>
+                      {/* EMAIL DATA ROW REMOVED */}
                       <td className="px-6 py-4 whitespace-nowrap text-sm">
                         <span
                           className={`text-xs font-medium ${
@@ -656,30 +658,29 @@ const addAllocation = async () => {
               Teacher to Subject
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-             {/* Teacher Dropdown */}
-<select
-  value={newAllocation.teacherId}
-  onChange={(e) =>
-    setNewAllocation({
-      ...newAllocation,
-      teacherId: e.target.value,
-    })
-  }
-  className="rounded-lg border border-gray-700 bg-gray-950/50 px-4 py-3 text-white outline-none focus:border-indigo-500"
->
-  <option value="" className="text-gray-700">
-    Select Teacher
-  </option>
-  {teacherData.map((teacher) => (
-    <option
-      key={teacher._id}
-      value={teacher._id}  
-      className="text-gray-700"
-    >
-      {teacher.name} ({teacher.enrollmentNumber})
-    </option>
-  ))}
-</select>
+              <select
+                value={newAllocation.teacherId}
+                onChange={(e) =>
+                  setNewAllocation({
+                    ...newAllocation,
+                    teacherId: e.target.value,
+                  })
+                }
+                className="rounded-lg border border-gray-700 bg-gray-950/50 px-4 py-3 text-white outline-none focus:border-indigo-500"
+              >
+                <option value="" className="text-gray-700">
+                  Select Teacher
+                </option>
+                {teacherData.map((teacher) => (
+                  <option
+                    key={teacher._id}
+                    value={teacher._id}
+                    className="text-gray-700"
+                  >
+                    {teacher.name} ({teacher.enrollmentNumber})
+                  </option>
+                ))}
+              </select>
               <select
                 value={newAllocation.subjectId}
                 onChange={(e) =>
