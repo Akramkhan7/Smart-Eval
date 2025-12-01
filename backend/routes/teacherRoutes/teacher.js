@@ -25,6 +25,8 @@ router.post("/addAssignment", isLoggedIn, async (req, res) => {
       name,
       marks,
       subject: allotedSubject,
+      unlockedDate: new Date(),
+      dueDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
     });
     if (assigenment) {
       await Subjects.findByIdAndUpdate(
