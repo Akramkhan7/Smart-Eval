@@ -326,24 +326,31 @@ const ProfessionalBusiness = () => {
 
       <section className=" text-white font-thin py-16 px-4 md:px-12 lg:px-24 min-h-screen flex flex-col justify-start">
         <h1 className="text-4xl md:text-5xl font-stretch-condensed mb-16 max-w-4xl">
-          Built by Professionals, for Professionals
+          Built by Students, for Students 
         </h1>
 
         <div className="flex flex-col lg:flex-row gap-12 lg:gap-24 items-start">
           {/* Left Text Column */}
-          <div className="flex-1 max-w-xl text-lg text-gray-300 space-y-8">
+         <div className="flex-1 max-w-xl text-gray-300 space-y-6 text-sm sm:text-base">
             <p>
-              This is a space to share more about the business: who's behind it,
-              what it does and what this site has to offer. It's an opportunity
-              to tell the story behind the business or describe a special
-              service or product it offers. You can use this section to share
-              the company history or highlight a particular feature that sets it
-              apart from competitors.
+              Watch how SmartEval automates assignment evaluation — from plagiarism detection
+              to handwriting verification and AI-assisted scoring.
             </p>
             <p>
-              Let the writing speak for itself. Keep a consistent tone and voice
-              throughout the website to stay true to the brand image and give
-              visitors a taste of the company's values and personality.
+              Our workflow helps teachers save time, maintain fairness, 
+              and provide detailed insights for every student submission.
+            </p>
+            <p>
+              Each step is automated but fully transparent, ensuring accuracy and efficiency.
+            </p>
+            <p>
+              Students benefit from instant feedback and clear grading reports, making the learning process faster and more reliable.
+            </p>
+            <p>
+              Administrators can monitor progress, generate analytics, and maintain secure records effortlessly.
+            </p>
+            <p>
+              SmartEval supports multiple file types including scanned documents, images, and PDFs, ensuring smooth submission for every student.
             </p>
           </div>
 

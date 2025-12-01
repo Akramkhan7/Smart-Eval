@@ -2,23 +2,27 @@ import React from "react";
 import { motion } from "framer-motion";
 
 const features = [
-  { id: 1, title: "FLEXIBLE PLATFORM", tag: "FEATURE 1", highlight: true, row: 1 },
-  { id: 2, title: "FULLY SECURED",  tag: "FEATURE 2", highlight: false, row: 1 },
-  { id: 3, title: "TIME SAVER",      tag: "FEATURE 3", highlight: true, row: 1 },
-  { id: 4, title: "KEEP TRACK",      tag: "FEATURE 4", highlight: false, row: 2 },
-  { id: 5, title: "MORE FOCUS",      tag: "FEATURE 5", highlight: true, row: 2 },
-  { id: 6, title: "EASY DEPLOY",     tag: "FEATURE 6", highlight: false, row: 2 },
+  { id: 1, title: "AI-POWERED CHECKS",      tag: "FEATURE 1", highlight: true,  row: 1 },
+  { id: 2, title: "SECURE & RELIABLE",      tag: "FEATURE 2", highlight: false, row: 1 },
+  { id: 3, title: "SAVES TEACHERS' TIME",   tag: "FEATURE 3", highlight: true,  row: 1 },
+
+  { id: 4, title: "REAL-TIME TRACKING",     tag: "FEATURE 4", highlight: false, row: 2 },
+  { id: 5, title: "SMART INSIGHTS",         tag: "FEATURE 5", highlight: true,  row: 2 },
+  { id: 6, title: "QUICK SETUP",            tag: "FEATURE 6", highlight: false, row: 2 },
 ];
 
-// Motion variants
-const leftToRight = {
-  hidden: { opacity: 0, x: -100 },
-  visible: { opacity: 1, x: 0 },
-};
-
-const rightToLeft = {
-  hidden: { opacity: 0, x: 100 },
-  visible: { opacity: 1, x: 0 },
+// Opacity + slight scale animation
+const fadeInUp = {
+  hidden: { opacity: 0, y: 30, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      duration: 0.8,
+      ease: "easeOut",
+    },
+  },
 };
 
 function FeatureSection() {
@@ -28,26 +32,22 @@ function FeatureSection() {
         A Seamless User Experience
       </h2>
 
-      {/* GRID */}
       <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-        {features.map((f) => (
+        {features.map((f, index) => (
           <motion.div
             key={f.id}
-            className="rounded-2xl overflow-hidden bg-[#1f1f1f] border border-white/10 shadow-lg hover:scale-[1.01] transition duration-300"
-
-            // Animation
-            variants={f.row === 1 ? leftToRight : rightToLeft}
+            className="rounded-2xl overflow-hidden bg-[#1f1f1f] border border-white/10 shadow-lg
+                       hover:scale-[1.01] transition duration-300"
+            variants={fadeInUp}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: false, amount: 0.3 }}
-            transition={{ duration: 0.7, ease: "easeOut" }}
+            transition={{ delay: index * 0.15 }} // Stagger effect
           >
-            {/* Top Bar */}
             <div className="bg-[#2a2a2a] py-4 px-6 text-sm tracking-wider text-gray-300">
               {f.tag}
             </div>
 
-            {/* Content */}
             <div
               className={`py-12 px-6 text-2xl tracking-wide ${
                 f.highlight ? "bg-[#5037ff]" : "bg-[#3a3a3a]"

@@ -25,8 +25,8 @@ export default function Features() {
       {/* HEADER */}
       <header className="max-w-7xl mx-auto mb-16 text-white">
         <h1 className="text-4xl sm:text-5xl font-thin leading-tight">
-          All Your Data Needs in a <br className="hidden sm:block" />
-          Single AI-Powered Workspace
+          Powerful AI Tools for Modern Academic Evaluation <br className="hidden sm:block" />
+          All in One Smart Workspace
         </h1>
       </header>
 
@@ -61,11 +61,12 @@ export default function Features() {
 
               <div className="flex flex-col grow">
                 <div className="text-lg font-bold uppercase text-gray-200 mb-2 tracking-wider">
-                  DEEP DIVE ANALYSIS IN SECONDS
+                  AI-Powered Answer Evaluation
                 </div>
                 <p className="text-sm text-gray-400 leading-relaxed">
-                  Describe the product here. Include important features, pricing
-                  and other info.
+                  Instantly analyze handwritten or typed student submissions with AI-driven 
+                  accuracy. SmartEval evaluates content, correctness, structure, and writing 
+                  clarity — delivering results in seconds.
                 </p>
               </div>
 
@@ -95,11 +96,11 @@ export default function Features() {
 
               <div className="flex flex-col grow">
                 <div className="text-lg font-bold uppercase text-gray-200 mb-2 tracking-wider">
-                  DATA VISUALIZATION
+                 PERFORMANCE DASHBOARDS
                 </div>
                 <p className="text-sm text-gray-400 leading-relaxed">
-                  Describe the product here. Include important features, pricing
-                  and other info.
+                 Visualize student progress with automatic charts and insights. Track learning 
+  gaps, compare class performance, and generate reports instantly.
                 </p>
               </div>
 
@@ -129,11 +130,13 @@ export default function Features() {
 
               <div className="flex flex-col grow">
                 <div className="text-lg font-bold uppercase text-gray-200 mb-2 tracking-wider">
-                  CUSTOM AI SOLUTIONS
+                    PLAGIARISM & AI CONTENT CHECK
+
                 </div>
                 <p className="text-sm text-gray-400 leading-relaxed">
-                  Describe the product here. Include important features, pricing
-                  and other info.
+                 Detect copied, AI-generated, or rephrased answers with high accuracy. 
+  SmartEval ensures academic honesty by comparing submissions across 
+  databases and AI patterns.
                 </p>
               </div>
 
@@ -177,11 +180,12 @@ export default function Features() {
 
               <div className="flex flex-col grow">
                 <div className="text-lg font-bold uppercase text-gray-200 mb-2 tracking-wider">
-                  DEEP DIVE ANALYSIS IN SECONDS
+  HANDWRITING VERIFICATION
                 </div>
                 <p className="text-sm text-gray-400 leading-relaxed">
-                  Describe the product here. Include important features, pricing
-                  and other info.
+                 Verify whether the uploaded answers are written by the same student. 
+  Our handwriting recognition model analyzes patterns and prevents 
+  impersonation or outsourced writing.
                 </p>
               </div>
 
@@ -225,11 +229,12 @@ export default function Features() {
 
               <div className="flex flex-col grow">
                 <div className="text-lg font-bold uppercase text-gray-200 mb-2 tracking-wider">
-                  DEEP DIVE ANALYSIS IN SECONDS
+                  SMART GRADING AUTOMATION
                 </div>
                 <p className="text-sm text-gray-400 leading-relaxed">
-                  Describe the product here. Include important features, pricing
-                  and other info.
+                  Generate accurate marks, feedback, and evaluation summaries 
+  automatically. Reduce teacher workload and speed up the checking process 
+  by 10x.
                 </p>
               </div>
 
@@ -257,7 +262,7 @@ export default function Features() {
       group flex items-center justify-center 
       px-5 py-2 w-48 rounded-full text-white 
       text-lg sm:text-xl font-thin 
-      border border-white/40 bg-transparent
+      border border-white/40 bg-transparent cursor-pointer
       transition-all duration-300 
       shadow-none hover:shadow-lg hover:scale-[1.02]
     "
@@ -268,8 +273,7 @@ export default function Features() {
               e.currentTarget.style.background =
                 "linear-gradient(90deg, #8A15A3, #4D97FF)";
               e.currentTarget.style.border = "1px solid transparent";
-              e.currentTarget.style.boxShadow =
-                "0 0 10px rgba(138, 21, 163, 0.7), 0 0 20px rgba(77, 151, 255, 0.5)";
+              
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.background = "transparent";

@@ -11,40 +11,41 @@ const TimelineCentered = () => {
 
   // Memoize steps to prevent unnecessary re-renders
   const steps = useMemo(
-    () => [
-      {
-        title: "Student Login & Upload",
-        description:
-          "Students access the platform, log in securely, and submit assignments.",
-      },
-      {
-        title: "AI Originality & Scoring",
-        description:
-          "Our advanced AI automatically checks for plagiarism and provides initial scores.",
-      },
-      {
-        title: "Teacher Review & Feedback",
-        description:
-          "Teachers review AI reports, add personalized feedback, and assign final grades.",
-      },
-      {
-        title: "Admin Oversight & Control",
-        description:
-          "Administrators manage users, make announcements, and allocate coursework.",
-      },
-      {
-        title: "Detailed Progress Reports",
-        description:
-          "Comprehensive reports for students, teachers, and admins on all assignments.",
-      },
-      {
-        title: "Secure Data Archiving",
-        description:
-          "All submissions, grades, and reports are securely stored for future reference.",
-      },
-    ],
-    []
-  );
+  () => [
+    {
+      title: "Student Login & Upload",
+      description:
+        "Students log in and upload handwritten or typed assignments in image or PDF format.",
+    },
+    {
+      title: "AI Plagiarism Check",
+      description:
+        "AI scans submissions across class data and online sources to detect plagiarism or AI-generated text.",
+    },
+    {
+      title: "Handwriting Verification",
+      description:
+        "SmartEval analyzes handwriting patterns to confirm the student’s identity and prevent impersonation.",
+    },
+    {
+      title: "AI Evaluation & Scores",
+      description:
+        "The system checks accuracy, clarity, and structure, generating AI-suggested scores instantly.",
+    },
+    {
+      title: "Teacher Review",
+      description:
+        "Teachers review AI findings, add feedback, adjust marks, and finalize grades.",
+    },
+    {
+      title: "Reports & Secure Storage",
+      description:
+        "Plagiarism results, handwriting analysis, and final marks are stored securely for future reference.",
+    },
+  ],
+  []
+);
+
 
   // Use GSAP's useGSAP hook for automatic cleanup
   useGSAP(

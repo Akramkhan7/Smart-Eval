@@ -29,21 +29,39 @@ const Header = () => {
       </div>
 
       {/* Menu */}
-      <nav className="flex items-center gap-8 px-8 ml-145 py-4 rounded-full border border-white/20 bg-white/5 backdrop-blur-xl">
-        <a className="text-white text-sm hover:text-gray-900 transition duration-150 cursor-pointer">Features</a>
-        <a className="text-white text-sm hover:text-gray-900 transition duration-150 cursor-pointer">Pricing</a>
-        <a className="text-white text-sm hover:text-gray-900 transition duration-150 cursor-pointer">FAQ</a>
+      <nav className="flex items-center gap-15 px-13 ml-145 py-4 rounded-full border border-white/20 bg-white/5 backdrop-blur-xl">
+        <a
+  className="text-white text-sm cursor-pointer transition-all duration-300 
+             hover:text-transparent hover:bg-clip-text 
+             hover:bg-linear-to-r hover:from-[#8A15A3] hover:to-[#4D97FF]"
+>
+  Features
+</a>
 
-        <div className="flex items-center gap-1 text-white">
-          <FaUserCircle size={20} />
-          <span>Log In</span>
-        </div>
+<a
+  className="text-white text-sm cursor-pointer transition-all duration-300 
+             hover:text-transparent hover:bg-clip-text 
+             hover:bg-linear-to-r hover:from-[#8A15A3] hover:to-[#4D97FF]"
+>
+  Pricing
+</a>
+
+<a
+  className="text-white text-sm cursor-pointer transition-all duration-300 
+             hover:text-transparent hover:bg-clip-text 
+             hover:bg-linear-to-r hover:from-[#8A15A3] hover:to-[#4D97FF]"
+>
+  FAQ
+</a>
+
+
+        
       </nav>
 
       {/* Button */}
       <button
         onClick={() => navigate("/login")} // FIX 3: useNavigate hook works like this
-        className="bg-transparent text-white font-semibold px-8 py-3 rounded-full border border-white hover:bg-white hover:text-black transition duration-200"
+        className="bg-transparent cursor-pointer text-white font-semibold px-8 py-3 rounded-full border border-white hover:bg-white hover:text-black transition-all duration-300 "
       >
         GET STARTED
       </button>

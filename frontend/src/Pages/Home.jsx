@@ -8,6 +8,7 @@ import FooterCTASection from "../components/Footer/FooterCTASection";
 import StudentDashboard from "./Student/Student";
 import { AuthContext } from "../context/AuthContext";
 import { useContext } from "react";
+import Steps from '../components/Home/Steps'
 
 const Home = () => {
   const { user, loading } = useContext(AuthContext);
@@ -18,6 +19,7 @@ const Home = () => {
       <HeroSection />
       <Features />
       <Footer />
+      <Steps />
       <FooterCTASection />
     </div>
   );

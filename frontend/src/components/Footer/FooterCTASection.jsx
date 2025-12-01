@@ -53,13 +53,13 @@ const FooterCTASection = () => {
         {/* Content */}
         <div className="relative z-10 max-w-3xl">
           <h1 className="mb-8 text-5xl font-light leading-tight md:text-6xl lg:text-7xl">
-            Get All the Tools You Need
+Smarter, Faster & Fair Academic Evaluation
             <br />
-            In a Single Platform
+Powered by AI
           </h1>
           
           <button className="group flex items-center gap-3 rounded-full bg-gray-200 px-8 py-4 text-sm font-semibold uppercase tracking-wider text-black transition-all duration-300 hover:bg-white hover:shadow-lg">
-            Get Started
+            Start Evaluating Smarter
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </button>
         </div>
@@ -76,9 +76,10 @@ const FooterCTASection = () => {
             <div className="lg:col-span-3">
               <div className="flex items-center gap-2">
                 <div className="flex h-8 w-8 items-center justify-center rounded bg-white">
-                  <span className="text-lg font-bold text-black">A</span>
+                  <span className="text-lg font-bold text-black">S</span>
                 </div>
-                <span className="text-xl font-semibold">Datox</span>
+                <span className="text-xl font-semibold">SmartEval
+</span>
               </div>
             </div>
 
@@ -88,17 +89,18 @@ const FooterCTASection = () => {
               <ul className="space-y-4">
                 <li>
                   <a href="#" className="text-sm text-gray-400 transition-colors hover:text-white">
-                    Features
+                    AI Features
+
                   </a>
                 </li>
                 <li>
                   <a href="#" className="text-sm text-gray-400 transition-colors hover:text-white">
-                    Pricing
+                    Plans
                   </a>
                 </li>
                 <li>
                   <a href="#" className="text-sm text-gray-400 transition-colors hover:text-white">
-                    FAQ
+                    How SmartEval Works
                   </a>
                 </li>
               </ul>
@@ -133,7 +135,7 @@ const FooterCTASection = () => {
 
             {/* Newsletter Section */}
             <div className="lg:col-span-5">
-              <h3 className="mb-6 text-sm font-semibold text-white">Stay Connected</h3>
+              <h3 className="mb-6 text-sm font-semibold text-white">Stay Updated with SmartEval</h3>
               <form onSubmit={handleSubscribe} className="flex flex-col gap-4">
                 <div className="flex flex-col gap-2">
                   <label htmlFor="email" className="text-sm text-gray-400">
@@ -169,7 +171,7 @@ const FooterCTASection = () => {
                 href="mailto:info@mysite.com"
                 className="text-sm uppercase tracking-wider text-gray-400 transition-colors hover:text-white"
               >
-                info@mysite.com
+                support@smarteval.ai
               </a>
               <div className="flex items-center gap-4">
                 <a
@@ -191,14 +193,14 @@ const FooterCTASection = () => {
 
             {/* Copyright */}
             <div className="text-sm text-gray-500">
-              © 2035 BY DATOX. MADE WITH{' '}
+             © 2025 SmartEval.{' '}
               <a
                 href="https://www.wix.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="underline transition-colors hover:text-gray-300"
               >
-                WIX STUDIO™
+                Powered by AI-Driven Academic Tools.
               </a>
             </div>
           </div>

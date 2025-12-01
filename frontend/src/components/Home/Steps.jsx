@@ -5,7 +5,7 @@ function HeroSection3() {
   return (
     <>
       <TimelineCentered />
-      <Navbar />
+      
     </>
   );
 }
