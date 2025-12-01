@@ -69,7 +69,7 @@ router.get("/allSubjects", isLoggedIn, async (req, res) => {
 
 //plag Checker
 
-router.post("/check-plagiarism",isLoggedIn, async (req, res) => {
+router.post("/check-plagiarism", isLoggedIn, async (req, res) => {
   try {
     const { text } = req.body;
 

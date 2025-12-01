@@ -1,8 +1,8 @@
 import express from "express";
 import conectDB from "./config/db.js";
-// import Students from "./models/student.js";
-// import Admins from "./models/admin.js";
-// import Teachers from "./models/teacher.js";
+import Students from "./models/student.js";
+import Admins from "./models/admin.js";
+import Teachers from "./models/teacher.js";
 import session from "express-session";
 import cors from "cors";
 import flash from "connect-flash";
@@ -24,24 +24,13 @@ app.use(bodyParser.json({ limit: "5mb" }));
 //middlwares
 app.use(
   cors({
-    origin: "http://localhost:5173",
-    // origin: "http://localhost:3000",
+    origin: ["http://localhost:5173", "http://localhost:5171"],
     credentials: true,
     methods: ["GET", "POST"], // optional but recommended
     allowedHeaders: ["Content-Type"], // required for fetch
   })
 );
-// app.use(
-//   cors({
-//     origin: "http://localhost:5173",
-//     credentials: true,
-//     methods: ["GET", "POST"], // optional but recommended
-//     allowedHeaders: ["Content-Type"], // required for fetch
-//   })
-// );
-
 app.use(cookieParser());
-
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -60,11 +49,27 @@ app.post("/user/register", userRegister);
 app.post("/teacher/login", teacherLogin);
 app.post("/teacher/register", teacherRegister);
 
-app.get("/auth/check", isLoggedIn, (req, res) => {
-  if (req.user) {
-    return res.json({ loggedIn: true, user: req.user });
+app.get("/auth/check", isLoggedIn, async (req, res) => {
+  if (!req.user) {
+    return res.json({ loggedIn: false });
   }
-  return res.json({ loggedIn: false });
+  const role = req.user.role.toLowerCase();
+  let user;
+
+  if (role === "student") {
+    user = await Students.findById(req.user.id).select("-password");
+  } else if (role === "teacher") {
+    user = await Teachers.findById(req.user.id).select("-password");
+  } else if (role === "admin") {
+    user = await Admins.findById(req.user.id).select("-password");
+  } else {
+    return res.json({ loggedIn: false });
+  }
+
+  return res.json({
+    loggedIn: true,
+    user,
+  });
 });
 
 // redirecting

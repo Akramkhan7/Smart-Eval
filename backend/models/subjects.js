@@ -25,7 +25,7 @@ const subjectSchema = new mongoose.Schema({
   assignments: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "AssignmentSol",
+      ref: "Assignment",
     },
   ],
 });

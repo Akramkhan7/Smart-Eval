@@ -11,6 +11,7 @@ const assignmentSchema = new mongoose.Schema({
   submissions: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "AssignmentSol",
+    default:null,
   },
   subject: {
     type: mongoose.Schema.Types.ObjectId,

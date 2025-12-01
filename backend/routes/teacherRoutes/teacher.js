@@ -5,19 +5,39 @@ import Teachers from "../../models/teacher.js";
 import Students from "../../models/student.js";
 import { isLoggedIn } from "../../middlewares/isLoggedIn.js";
 import Assignments from "../../models/assignment.js";
+import subjects from "../../models/subjects.js";
 
 router.post("/addAssignment", isLoggedIn, async (req, res) => {
   try {
-    if (req.user.role != "Teacher") {
+    if (req.user.role.toLowerCase() != "teacher") {
       return res.json("Only Teacher Can Access This");
     }
+    let teacher = await Teachers.findById(req.user.id);
+    let allotedSubject = teacher.subjectsAlloted;
+    if (!allotedSubject) {
+      return res.json({
+        success: false,
+        message: "No Subject Alloted to you",
+      });
+    }
     let { name, marks } = req.body;
-    console.log(name, marks);
     let assigenment = await Assignments.create({
       name,
       marks,
+      subject: allotedSubject,
     });
     if (assigenment) {
+      await Subjects.findByIdAndUpdate(
+        allotedSubject,
+        {
+          $push: {
+            assignments: assigenment._id,
+          },
+        },
+        {
+          new: true,
+        }
+      );
       return res.json({
         success: true,
         message: "Assignment Created Successfully",
@@ -38,16 +58,16 @@ router.post("/addAssignment", isLoggedIn, async (req, res) => {
 
 router.get("/allDetails", isLoggedIn, async (req, res) => {
   try {
-    if (req.user.role != "Teacher") {
+    if (req.user.role.toLowerCase() != "teacher") {
       return res.json("Only Teacher Can Access This");
     }
-    let teacher = await Teachers.findById(req.user._id).populate(
+    let teacher = await Teachers.findById(req.user.id).populate(
       "subjectsAlloted"
     );
     if (!teacher) {
       return res.json({ success: false, message: "Authorization problem" });
     }
-    let subjectId = teacher.subjectsAlloted._id;
+    let subjectId = teacher.subjectsAlloted;
     let subject = await Subjects.findById(subjectId).populate("assignments");
     // let allStudents = await Students.find({});
     return res.json({
