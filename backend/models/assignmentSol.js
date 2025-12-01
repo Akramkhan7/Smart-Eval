@@ -8,14 +8,12 @@ const assignmentSolSchema = new mongoose.Schema({
     ref: "Student",
     required: true,
   },
-  assignmentNum: {
-    type: Number,
+  assignmentId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Assignment",
     required: true,
   },
-  subject: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Subject",
-  },
+  
   status: {
     type: String,
     enum: ["Pending", "Submitted"],
@@ -27,19 +25,7 @@ const assignmentSolSchema = new mongoose.Schema({
   },
   marks: Number,
   feedback: String,
-  unlockedDate: {
-    type: Date,
-  },
-  dueDate: {
-    type: Date,
-  },
-  submitDate: {
-    type: Date,
-  },
-  locked: {
-    type: Boolean,
-    default: true,
-  },
+ 
 });
 
 export default mongoose.models.AssignmentSol ||

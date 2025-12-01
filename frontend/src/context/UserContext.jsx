@@ -14,7 +14,7 @@ export const UserProvider = ({ children }) => {
         data = data.subjects;
       }
       if (data) {
-        console.log(data)
+        console.log("User Context:", data);
         setSubjects(data);
       } else {
         setSubjects(null);

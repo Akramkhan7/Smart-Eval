@@ -17,7 +17,7 @@ const StudentDashboard = () => {
   useEffect(() => {
     if (subjects) {
       setEnrolledSubjects(subjects);
-      console.log(subjects);
+      console.log("user panel ", subjects);
     }
   }, [subjects]);
 
@@ -43,7 +43,7 @@ const StudentDashboard = () => {
           <p className="text-sm text-gray-500 uppercase tracking-wider">
             Current Session
           </p>
-          <p className="text-xl font-bold text-white">Fall 2025</p>
+          <p className="text-xl font-bold text-white"> 2025-26</p>
         </div>
       </div>
 
@@ -78,7 +78,9 @@ const StudentDashboard = () => {
               {/* Teacher Name */}
               <div className="flex items-center text-sm text-gray-400 mb-6">
                 <User className="h-3 w-3 mr-2" />
-                {subject.teacher ? subject.teacher : "Not Alloted Yet"}
+                {subject.allotedTeacher
+                  ? subject.allotedTeacher.name
+                  : "Not Alloted Yet"}
               </div>
 
               {/* Footer: Stats & Arrow */}

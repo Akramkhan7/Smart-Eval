@@ -11,11 +11,20 @@ const assignmentSchema = new mongoose.Schema({
   submissions: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "AssignmentSol",
-    default:null,
+    default: null,
   },
   subject: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Subject",
+  },
+  unlockedDate: {
+    type: Date,
+  },
+  dueDate: {
+    type: Date,
+  },
+  submitDate: {
+    type: Date,
   },
   locked: {
     type: Boolean,

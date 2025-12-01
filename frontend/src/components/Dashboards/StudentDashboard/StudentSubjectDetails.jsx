@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useUser } from "../../../context/UserContext";
-import { useContext } from "react";
+
 import {
   ChevronLeft,
   Lock,
@@ -12,90 +12,40 @@ import {
   Eye,
 } from "lucide-react";
 
-// --- Dummy Data ---
-const subjectData = {
-  "SUB-101": {
-    name: "Operating Systems",
-    teacher: "Dr. Evelyn Sharp",
-    code: "CS-301",
-  },
-  "SUB-102": {
-    name: "Computer Networks",
-    teacher: "Prof. Mark Webber",
-    code: "CS-302",
-  },
-  "SUB-103": {
-    name: "Database Management",
-    teacher: "Ms. Chloe Bennet",
-    code: "CS-304",
-  },
-  "SUB-104": {
-    name: "Artificial Intelligence",
-    teacher: "Dr. Evelyn Sharp",
-    code: "CS-401",
-  },
-};
-
-const assignmentsData = [
-  {
-    id: 1,
-    title: "Assignment 1: Basics",
-    status: "Completed",
-    isLocked: false,
-    dueDate: "2025-10-15",
-  },
-  {
-    id: 2,
-    title: "Assignment 2: Process Scheduling",
-    status: "Pending",
-    isLocked: false,
-    dueDate: "2025-11-30",
-  },
-  {
-    id: 3,
-    title: "Assignment 3: Deadlocks",
-    status: "Pending",
-    isLocked: true,
-    dueDate: "2025-12-15",
-  },
-  {
-    id: 4,
-    title: "Assignment 4: Memory Management",
-    status: "Pending",
-    isLocked: true,
-    dueDate: "2025-12-20",
-  },
-  {
-    id: 5,
-    title: "Assignment 5: File Systems",
-    status: "Pending",
-    isLocked: true,
-    dueDate: "2026-01-10",
-  },
-];
-
 const StudentSubjectDetails = () => {
-  const [assignments, setAssignments] = useState(null);
-  const { subject } = useUser();
+  const { id } = useParams();
+  const [assignments, setAssignments] = useState([]);
+  const [subject, setSubject] = useState(null);
+  const { subjects } = useUser();
+
   useEffect(() => {
-    if (subject) {
-      setAssignments(subject.assignments);
+    if (subjects) {
+      const found = subjects.find((s) => s._id === id);
+      if (found) {
+        console.log("found");
+        setSubject(found);
+        setAssignments(found.assignments || []);
+      }
     }
+  }, [subjects, id]);
+
+  useEffect(() => {
+    console.log("UPDATED subject =", subject);
+  }, [subject]);
+
+  useEffect(() => {
+    console.log("UPDATED assignments =", assignments);
   }, [assignments]);
 
-  const { id } = useParams();
   const navigate = useNavigate();
-  // const subject = subjectData[id] || subjectData["SUB-101"];
 
   const handleAssignmentClick = (assignmentId) => {
-    // Navigate to the upload/view page
     navigate(`/student/subject/${id}/assignment/${assignmentId}`);
   };
 
   return (
-    // Added pt-32 to push content down below fixed headers
     <div className="relative z-10 bg-gray-950 min-h-screen p-4 md:p-8 lg:p-10 pt-32 text-white font-sans">
-      {/* Back Button Row - Positioned clearly below header */}
+      {/* Back Button Row */}
       <div className="max-w-5xl mx-auto mb-6 relative z-50">
         <button
           onClick={() => navigate("/student/dashboard")}
@@ -105,19 +55,22 @@ const StudentSubjectDetails = () => {
           <span className="font-medium">Back to Subjects</span>
         </button>
       </div>
-
       {/* Header Content */}
       <div className="max-w-5xl mx-auto mb-8 border-b border-gray-800 pb-6">
         <div className="flex flex-col md:flex-row justify-between items-end">
           <div>
             <h1 className="text-3xl font-bold text-white mb-2">
-              {assignments && assignments[0].subject.name}
+              {(subject && subject.name) || "Not Added Yet"}
             </h1>
             <p className="text-indigo-400 font-medium flex items-center">
-              Instructor: {assignments && assignments[0].subject.teacher}
+              Instructor:{" "}
+              {(subject &&
+                subject.allotedTeacher &&
+                subject.allotedTeacher.name) ||
+                "Not Added Yet"}
               <span className="mx-2 text-gray-600">|</span>
               <span className="text-gray-400">
-                {assignments && assignments[0].subject.code}
+                {(subject && subject.courseCode) || "Not Added Yet"}
               </span>
             </p>
           </div>
@@ -130,11 +83,10 @@ const StudentSubjectDetails = () => {
           </div>
         </div>
       </div>
-
       {/* Assignments List */}
       <div className="max-w-5xl mx-auto space-y-4">
         {assignments &&
-          assignments.map((assignment) => (
+          assignments.map((assignment,number) => (
             <div
               key={assignment._id}
               className={`p-6 rounded-xl border transition-all duration-300 ${
@@ -165,7 +117,7 @@ const StudentSubjectDetails = () => {
                         assignment.locked ? "text-gray-500" : "text-white"
                       }`}
                     >
-                      {assignment.name}
+                     Assignment {number+1} : {assignment.name}
                     </h3>
                     <div className="flex items-center text-sm text-gray-500 mt-1">
                       <Clock className="h-3 w-3 mr-1" />
@@ -184,7 +136,6 @@ const StudentSubjectDetails = () => {
                       Locked
                     </button>
                   ) : assignment.status === "Completed" ? (
-                    // "View Submission" Button
                     <button
                       onClick={() => handleAssignmentClick(assignment._id)}
                       className="w-full md:w-auto flex items-center justify-center px-6 py-2 bg-green-500/10 text-green-400 border border-green-500/20 font-medium rounded-lg hover:bg-green-500/20 transition-all cursor-pointer"

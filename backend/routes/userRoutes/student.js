@@ -5,6 +5,7 @@ import AssignmentBinary from "../../models/assignmentBinary.js";
 import { isLoggedIn } from "../../middlewares/isLoggedIn.js";
 import { createRequire } from "module";
 import subjects from "../../models/subjects.js";
+import { populate } from "dotenv";
 const require = createRequire(import.meta.url);
 const pdfParse = require("pdf-parse");
 const router = express.Router();
@@ -63,7 +64,13 @@ router.post(
 //assigenment Rendering
 
 router.get("/allSubjects", isLoggedIn, async (req, res) => {
-  let allSubject = await subjects.find({}).populate("assignments");
+  let allSubject = await subjects
+    .find({})
+    .populate({
+      path: "assignments",
+      populate: { path: "subject" },
+    })
+    .populate("allotedTeacher");
   res.json({ success: true, subjects: allSubject });
 });
 
