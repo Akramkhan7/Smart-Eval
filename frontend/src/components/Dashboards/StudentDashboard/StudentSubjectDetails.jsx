@@ -29,14 +29,7 @@ const StudentSubjectDetails = () => {
     }
   }, [subjects, id]);
 
-  useEffect(() => {
-    console.log("UPDATED subject =", subject);
-  }, [subject]);
-
-  useEffect(() => {
-    console.log("UPDATED assignments =", assignments);
-  }, [assignments]);
-
+ 
   const navigate = useNavigate();
 
   const handleAssignmentClick = (assignmentId) => {

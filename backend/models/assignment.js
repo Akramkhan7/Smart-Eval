@@ -8,11 +8,12 @@ const assignmentSchema = new mongoose.Schema({
     fileName: String,
   },
   marks: Number,
-  submissions: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "AssignmentSol",
-    default: null,
-  },
+  submissions: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "AssignmentSol",
+    },
+  ],
   subject: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Subject",
@@ -23,12 +24,9 @@ const assignmentSchema = new mongoose.Schema({
   dueDate: {
     type: Date,
   },
-  submitDate: {
-    type: Date,
-  },
   locked: {
     type: Boolean,
-    default: true,
+    default: false,
   },
 });
 

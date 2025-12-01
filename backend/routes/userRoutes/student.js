@@ -6,8 +6,9 @@ import { isLoggedIn } from "../../middlewares/isLoggedIn.js";
 import { createRequire } from "module";
 import subjects from "../../models/subjects.js";
 import { populate } from "dotenv";
+import Assignments from "../../models/assignment.js";
 const require = createRequire(import.meta.url);
-const pdfParse = require("pdf-parse");
+const pdfParse = require("pdf-parse").default;
 const router = express.Router();
 
 router.post(
@@ -16,11 +17,10 @@ router.post(
   upload.single("file"),
   async (req, res) => {
     try {
-      let { subject, assignment } = req.body;
+      let { assignmentId } = req.body;
       const submitted = await AssignmentSol.create({
-        studentId: req.user._id,
-        assignmentNum: assignment,
-        subject: subject,
+        studentId: req.user.id,
+        assignmentId: assignmentId,
         file: {
           data: req.file.buffer,
           contentType: req.file.mimetype,
@@ -29,19 +29,17 @@ router.post(
       });
 
       if (submitted) {
-        const rawText = (await pdfParse(req.file.buffer)).text;
-
-        const assignment = await AssignmentBinary.create({
-          studentId: req.user._id,
-          fileName: req.file.originalname,
-          rawText,
-        });
-        if (assignment) {
-          return res.json({
-            success: true,
-            message: "PDF submitted And Uploaded",
-          });
-        }
+        await Assignments.findByIdAndUpdate(
+          assignmentId,
+          {
+            $push: {
+              submissions: submitted._id,
+            },
+          },
+          {
+            new: true,
+          }
+        );
 
         return res.json({ success: true, message: "PDF submitted" });
       } else {
@@ -60,6 +58,21 @@ router.post(
     }
   }
 );
+//some IMportan
+//  console.log(req.file)
+//         const rawText = (await pdfParse(req.file.buffer)).text;
+
+//         const assignment = await AssignmentBinary.create({
+//           studentId: req.user.id,
+//           fileName: req.file.originalname,
+//           rawText,
+//         });
+//         if (assignment) {
+//           return res.json({
+//             success: true,
+//             message: "PDF submitted And Uploaded",
+//           });
+//         }
 
 //assigenment Rendering
 

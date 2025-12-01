@@ -17,6 +17,7 @@ const assignmentSolSchema = new mongoose.Schema({
   status: {
     type: String,
     enum: ["Pending", "Submitted"],
+    default:"Pending",
   },
   file: {
     data: Buffer,
