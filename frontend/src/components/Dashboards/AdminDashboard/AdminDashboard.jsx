@@ -199,101 +199,135 @@ const AdminDashboard = () => {
   };
 
   // New functions for subject management
-  const addSubject = async () => {
+ const addSubject = async () => {
     if (newSubject.name && newSubject.code && newSubject.credits) {
-      const subject = {
+      // 1. Prepare data for Backend (using your form field names)
+      const subjectPayload = {
         name: newSubject.name,
         code: newSubject.code.toUpperCase(),
         credits: parseInt(newSubject.credits),
       };
 
-      let res = await fetch("http://localhost:3000/admin/addSubject", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(subject),
-      });
-      res = await res.json();
-      if (res.success) {
-        setNewSubject({ name: "", code: "", credits: "" });
-        alert("Subject added successfully!");
-      } else {
-        setNewSubject({ name: "", code: "", credits: "" });
-        alert("Something Wrong!");
+      try {
+        let res = await fetch("http://localhost:3000/admin/addSubject", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(subjectPayload),
+        });
+        
+        const data = await res.json();
+
+        if (data.success) {
+          // 2. Prepare data for Frontend State (Matching your Table structure)
+          // Your table uses 'courseCode' and 'credit', so we map them here.
+          const newSubjectForState = {
+            id: data.data?._id || Date.now(), // Use real ID from backend if available, else temp ID
+            _id: data.data?._id || Date.now(), 
+            name: newSubject.name,
+            courseCode: newSubject.code.toUpperCase(), // Mapping 'code' to 'courseCode'
+            credit: parseInt(newSubject.credits)       // Mapping 'credits' to 'credit'
+          };
+
+          // 3. Update the list immediately without reload
+          setsubjectsData((prev) => [...prev, newSubjectForState]);
+
+          // 4. Clear form
+          setNewSubject({ name: "", code: "", credits: "" });
+          alert("Subject added successfully!");
+        } else {
+          setNewSubject({ name: "", code: "", credits: "" });
+          alert("Something Wrong!");
+        }
+      } catch (error) {
+        console.error("Error adding subject:", error);
+        alert("Server error, please try again.");
       }
+    } else {
+      alert("Please fill in all subject fields.");
     }
   };
 
   const deleteSubject = (id) => {
-    // Remove allocations for this subject first
+    // Remove allocations for this subject first (Frontend only)
     const updatedAllocations = allocations.filter(
       (allocation) => allocation.subjectId !== id
     );
     setAllocations(updatedAllocations);
 
-    // Remove subject
-    setsubjectsData(subjectsData.filter((subject) => subject.id !== id));
+    // Remove subject from the list (Frontend only)
+    setsubjectsData((prev) => prev.filter((subject) => subject.id !== id && subject._id !== id));
     alert("Subject deleted successfully!");
+    
+    // TODO: You should also make a fetch DELETE request here to remove it from the database permanently
   };
+const addAllocation = async () => {
+    // 1. Validate selection
+    if (!newAllocation.teacherId || !newAllocation.subjectId) {
+      alert("Please select both a Teacher and a Subject.");
+      return;
+    }
 
-  const addAllocation = async () => {
-    if (newAllocation.teacherId && newAllocation.subjectId) {
-      const teacher = users.find(
-        (u) => u.id === newAllocation.teacherId && u.role === "Teacher"
-      );
-      const subject = subjectsData.find(
-        (s) => s.id === newAllocation.subjectId
-      );
+    console.log("Searching for:", newAllocation); // Debug Log
 
-      if (teacher && subject) {
-        // Check if allocation already exists
-        const exists = allocations.find(
-          (a) =>
-            a.teacherId === newAllocation.teacherId &&
-            a.subjectId === newAllocation.subjectId
-        );
+    // 2. Find using STRING comparison to fix the "Number vs String" bug
+    const teacher = teacherData.find(
+      (t) => String(t._id) === String(newAllocation.teacherId)
+    );
+    const subject = subjectsData.find(
+      (s) => String(s._id) === String(newAllocation.subjectId)
+    );
 
-        if (!exists) {
-          const allocation = {
-            id: `A${Date.now()}`,
+    console.log("Found:", { teacher, subject }); // Debug Log
+
+    if (teacher && subject) {
+      try {
+        // 3. Send request to Backend
+        let res = await fetch("http://localhost:3000/admin/allocation", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
             teacherId: newAllocation.teacherId,
-            teacherName: teacher.name,
             subjectId: newAllocation.subjectId,
+          }),
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          // 4. Update the Table UI
+          const newAllocationEntry = {
+            id: Date.now(),
+            teacherId: teacher._id,
+            teacherName: teacher.name,
+            subjectId: subject.courseCode, 
             subjectName: subject.name,
           };
-          setAllocations([...allocations, allocation]);
+
+          setAllocations((prev) => [...prev, newAllocationEntry]);
           setNewAllocation({ teacherId: "", subjectId: "" });
-          let res = await fetch("http://localhost:3000/admin/allocation", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(newAllocation),
-          });
-          res = await res.json();
-          if (res.message) {
-            alert(res.message);
-          } else {
-            alert("Somethng went Wrong ");
-          }
+          alert(data.message);
         } else {
-          alert("This teacher is already allocated to this subject!");
+          alert(data.message);
         }
+      } catch (error) {
+        console.error("Allocation Error:", error);
+        alert("Server error. Check if backend is running.");
       }
+    } else {
+      // This will now show you EXACTLY what is failing in the console
+      console.error("Mismatch Debug:", {
+        lookingForTeacher: newAllocation.teacherId,
+        lookingForSubject: newAllocation.subjectId,
+        availableTeachers: teacherData,
+        availableSubjects: subjectsData
+      });
+      alert("Error: Selected teacher or subject not found in list (Check Console for details).");
     }
   };
-
-  const deleteAllocation = (id) => {
-    setAllocations(allocations.filter((allocation) => allocation.id !== id));
-    alert("Allocation removed successfully!");
-  };
-
-  // Get available teachers (only active teachers)
-  const availableTeachers = users.filter(
-    (user) => user.role === "Teacher" && user.status === "Active"
-  );
-
   return (
     <div className="relative z-10 bg-gray-950 min-h-screen p-4 md:p-8 lg:p-10 space-y-8 text-white font-sans">
       {/* Header with Navigation Tabs */}
@@ -622,29 +656,30 @@ const AdminDashboard = () => {
               Teacher to Subject
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-              <select
-                value={newAllocation.teacherId}
-                onChange={(e) =>
-                  setNewAllocation({
-                    ...newAllocation,
-                    teacherId: e.target.value,
-                  })
-                }
-                className="rounded-lg border border-gray-700 bg-gray-950/50 px-4 py-3 text-white outline-none focus:border-indigo-500"
-              >
-                <option value="" className="text-gray-700">
-                  Select Teacher
-                </option>
-                {teacherData.map((teacher) => (
-                  <option
-                    key={teacher._id}
-                    value={teacher.enrollmentNumber}
-                    className="text-gray-700"
-                  >
-                    {teacher.name} ({teacher.enrollmentNumber})
-                  </option>
-                ))}
-              </select>
+             {/* Teacher Dropdown */}
+<select
+  value={newAllocation.teacherId}
+  onChange={(e) =>
+    setNewAllocation({
+      ...newAllocation,
+      teacherId: e.target.value,
+    })
+  }
+  className="rounded-lg border border-gray-700 bg-gray-950/50 px-4 py-3 text-white outline-none focus:border-indigo-500"
+>
+  <option value="" className="text-gray-700">
+    Select Teacher
+  </option>
+  {teacherData.map((teacher) => (
+    <option
+      key={teacher._id}
+      value={teacher._id}  
+      className="text-gray-700"
+    >
+      {teacher.name} ({teacher.enrollmentNumber})
+    </option>
+  ))}
+</select>
               <select
                 value={newAllocation.subjectId}
                 onChange={(e) =>
