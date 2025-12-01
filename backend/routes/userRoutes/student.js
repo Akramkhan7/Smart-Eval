@@ -62,14 +62,14 @@ router.post(
 
 //assigenment Rendering
 
-router.get("/allSubjects", async (req, res) => {
+router.get("/allSubjects", isLoggedIn, async (req, res) => {
   let allSubject = await subjects.find({}).populate("assignments");
   res.json({ success: true, subjects: allSubject });
 });
 
 //plag Checker
 
-router.post("/check-plagiarism", async (req, res) => {
+router.post("/check-plagiarism",isLoggedIn, async (req, res) => {
   try {
     const { text } = req.body;
 

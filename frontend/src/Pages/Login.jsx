@@ -49,9 +49,12 @@ const Login = () => {
     }
 
     res = await res.json();
+
     if (res.messages?.length > 0) {
       const msg = res.messages[0];
       res.success ? showToast(msg, "success") : showToast(msg, "error");
+    }
+    if (res.success) {
       navigate(`/${form.role}/dashboard`);
     }
   };

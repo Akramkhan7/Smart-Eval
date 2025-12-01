@@ -7,7 +7,7 @@ dotenv.config();
 
 export const teacherLogin = async (req, res) => {
   let { enrollmentNumber, password, role } = req.body;
-  if (role && role !== "Teacher") {
+  if (role && role.toLowerCase() !== "teacher") {
     req.flash("error", "Role mismatched");
     return res.json({ success: false, messages: req.flash("error") });
   }
@@ -31,7 +31,7 @@ export const teacherLogin = async (req, res) => {
   }
 
   let token = jwt.sign(
-    { enrollmentNumber: teacher.enrollmentNumber, id: teacher._id },
+    { enrollmentNumber: teacher.enrollmentNumber, id: teacher._id, role: role },
     process.env.JWT_SECRET,
     { expiresIn: "7d" }
   );

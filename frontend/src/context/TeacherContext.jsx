@@ -1,29 +1,24 @@
 import { createContext, useContext, useState, useEffect } from "react";
 
-const AdminContext = createContext();
-export const AdminProvider = ({ children }) => {
+const TeacherContext = createContext();
+export const TeacherProvider = ({ children }) => {
   const [subjects, setSubjects] = useState([]);
-  const [teachers, setTeachers] = useState([]);
   const [students, setStudents] = useState([]);
 
   const allDetails = async () => {
     try {
-      const res = await fetch("http://localhost:3000/admin/allDetails", {
+      const res = await fetch("http://localhost:3000/teacher/allDetails", {
         credentials: "include",
       });
       let data = await res.json();
-      console.log("Admin Context ", data);
+      console.log("Teacher Context ", data);
       if (data.subjects) {
         setSubjects(data.subjects);
-      }
-      if (data.Teachers) {
-        setTeachers(data.Teachers);
       }
       if (data.Students) {
         setStudents(data.Students);
       }
     } catch (err) {
-      setTeachers(null);
       setSubjects(null);
       setStudents(null);
     }
@@ -34,12 +29,10 @@ export const AdminProvider = ({ children }) => {
   }, []);
 
   return (
-    <AdminContext.Provider
-      value={{ subjects, teachers, setTeachers, setSubjects }}
-    >
+    <TeacherContext.Provider value={{ subjects, students }}>
       {children}
-    </AdminContext.Provider>
+    </TeacherContext.Provider>
   );
 };
 
-export const useAdmin = () => useContext(AdminContext);
+export const useTeacher = () => useContext(TeacherContext);

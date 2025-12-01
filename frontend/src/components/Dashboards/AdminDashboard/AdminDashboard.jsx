@@ -112,12 +112,28 @@ const initialAllocations = [
 const AdminDashboard = () => {
   const [subjectsData, setsubjectsData] = useState([]);
   const [teacherData, setTeachersData] = useState([]);
+  const [allocations, setAllocations] = useState([]);
 
   const { subjects, teachers } = useAdmin();
 
   useEffect(() => {
     if (subjects) {
       setsubjectsData(subjects);
+      const newAllocations = [];
+
+      subjects.forEach((subject) => {
+        if (subject.allotedTeacher) {
+          newAllocations.push({
+            id: subject._id, // or some unique id
+            teacherId: subject.allotedTeacher._id,
+            teacherName: subject.allotedTeacher.name,
+            subjectId: subject.courseCode,
+            subjectName: subject.name,
+          });
+        }
+      });
+
+      setAllocations(newAllocations);
     }
     if (teachers) {
       setTeachersData(teachers);
@@ -132,7 +148,6 @@ const AdminDashboard = () => {
 
   // New states for subject management
 
-  const [allocations, setAllocations] = useState(initialAllocations);
   const [newSubject, setNewSubject] = useState({
     name: "",
     code: "",
@@ -142,16 +157,8 @@ const AdminDashboard = () => {
     teacherId: "",
     subjectId: "",
   });
-  // useEffect(async () => {
-  //   let res = await fetch("http://localhost:3000/admin/addAllocation", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify(newAllocation),
-  //   });
-  //   res = await res.json();
-  // }, [newAllocation]);
+
+  // Allocation
   const [activeTab, setActiveTab] = useState("overview"); // 'overview', 'subjectsData', 'allocations'
 
   // Handle Posting Announcement
@@ -230,7 +237,7 @@ const AdminDashboard = () => {
     alert("Subject deleted successfully!");
   };
 
-  const addAllocation = () => {
+  const addAllocation = async () => {
     if (newAllocation.teacherId && newAllocation.subjectId) {
       const teacher = users.find(
         (u) => u.id === newAllocation.teacherId && u.role === "Teacher"
@@ -257,7 +264,19 @@ const AdminDashboard = () => {
           };
           setAllocations([...allocations, allocation]);
           setNewAllocation({ teacherId: "", subjectId: "" });
-          alert("Teacher allocated to subject successfully!");
+          let res = await fetch("http://localhost:3000/admin/allocation", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(newAllocation),
+          });
+          res = await res.json();
+          if (res.message) {
+            alert(res.message);
+          } else {
+            alert("Somethng went Wrong ");
+          }
         } else {
           alert("This teacher is already allocated to this subject!");
         }
@@ -309,7 +328,7 @@ const AdminDashboard = () => {
                   : "text-gray-400 hover:text-white"
               }`}
             >
-              subjectsData
+              Subjects
             </button>
             <button
               onClick={() => setActiveTab("allocations")}
@@ -354,106 +373,6 @@ const AdminDashboard = () => {
               icon={Settings}
               colorClass="text-emerald-400"
             />
-          </div>
-
-          {/* Core Admin Actions Grid */}
-          <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6 pt-4">
-            {/* 1. Announcement Panel */}
-            <div className="bg-gray-900/50 p-6 rounded-xl border border-gray-800 space-y-4 backdrop-blur-sm">
-              <h4 className="text-xl font-semibold text-white flex items-center">
-                <Bell className="h-5 w-5 mr-2 text-yellow-400" /> Make Global
-                Announcement
-              </h4>
-              <textarea
-                value={announcementText}
-                onChange={(e) => setAnnouncementText(e.target.value)}
-                rows="3"
-                className="w-full rounded-lg border border-gray-700 bg-gray-950/50 px-4 py-3 text-white outline-none focus:border-indigo-500 transition-colors placeholder-gray-600"
-                placeholder="Enter announcement text for all users..."
-              />
-              <button
-                onClick={handleAnnouncement}
-                className="w-full py-2.5 bg-yellow-600 text-white font-semibold rounded-lg hover:bg-yellow-700 transition-colors shadow-lg shadow-yellow-600/20"
-              >
-                Post Announcement
-              </button>
-
-              <div className="pt-4">
-                <h5 className="text-sm font-medium text-gray-400 mb-3">
-                  Recent Announcements:
-                </h5>
-                <ul className="space-y-2">
-                  {announcements.map((a) => (
-                    <li
-                      key={a.id}
-                      className="p-3 bg-gray-950/30 rounded-md border-l-2 border-yellow-500 text-sm text-gray-300"
-                    >
-                      <span className="font-bold text-white block text-xs mb-1">
-                        [{a.date}]
-                      </span>
-                      {a.content}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-
-            {/* 2. User Management Panel */}
-            <div className="bg-gray-900/50 p-6 rounded-xl border border-gray-800 space-y-6 backdrop-blur-sm">
-              {/* Block/Unblock Section */}
-              <div className="space-y-4">
-                <h4 className="text-xl font-semibold text-white flex items-center">
-                  <Lock className="h-5 w-5 mr-2 text-red-400" /> Block/Unblock
-                  User
-                </h4>
-
-                <input
-                  type="text"
-                  value={userToBlock}
-                  onChange={(e) => setUserToBlock(e.target.value)}
-                  className="w-full rounded-lg border border-gray-700 bg-gray-950/50 px-4 py-3 text-white outline-none focus:border-indigo-500 placeholder-gray-600"
-                  placeholder="Enter User ID or Email to Block/Unblock"
-                />
-
-                {/* Two separate buttons layout */}
-                <div className="flex gap-4">
-                  <button
-                    onClick={() => handleAction("block")}
-                    className="w-1/2 py-2.5 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center shadow-lg shadow-red-600/20"
-                  >
-                    <Lock className="h-4 w-4 mr-2" /> Block User
-                  </button>
-                  <button
-                    onClick={() => handleAction("unblock")}
-                    className="w-1/2 py-2.5 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center shadow-lg shadow-green-600/20"
-                  >
-                    <RefreshCw className="h-4 w-4 mr-2" /> Unblock User
-                  </button>
-                </div>
-              </div>
-
-              {/* Quick Stats */}
-              <div className="pt-2">
-                <h4 className="text-xl font-semibold text-white flex items-center mb-2">
-                  <Layers className="h-5 w-5 mr-2 text-indigo-400" /> Quick
-                  Stats
-                </h4>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div className="bg-gray-950/30 p-3 rounded-lg border border-gray-800">
-                    <div className="text-gray-400">Total subjectsData</div>
-                    <div className="text-white font-semibold">
-                      {subjectsData.length}
-                    </div>
-                  </div>
-                  <div className="bg-gray-950/30 p-3 rounded-lg border border-gray-800">
-                    <div className="text-gray-400">Active Allocations</div>
-                    <div className="text-white font-semibold">
-                      {allocations.length}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
           </div>
 
           {/* Registered Users Table */}
@@ -538,6 +457,49 @@ const AdminDashboard = () => {
                   ))}
                 </tbody>
               </table>
+            </div>
+          </div>
+
+          {/* Core Admin Actions Grid */}
+          <div className="max-w-7xl mx-auto gap-6 pt-4">
+            {/* 1. Announcement Panel */}
+            <div className="bg-gray-900/50 p-6 rounded-xl border border-gray-800 space-y-4 backdrop-blur-sm">
+              <h4 className="text-xl font-semibold text-white flex items-center">
+                <Bell className="h-5 w-5 mr-2 text-yellow-400" /> Make Global
+                Announcement
+              </h4>
+              <textarea
+                value={announcementText}
+                onChange={(e) => setAnnouncementText(e.target.value)}
+                rows="3"
+                className="w-full rounded-lg border border-gray-700 bg-gray-950/50 px-4 py-3 text-white outline-none focus:border-indigo-500 transition-colors placeholder-gray-600"
+                placeholder="Enter announcement text for all users..."
+              />
+              <button
+                onClick={handleAnnouncement}
+                className="w-full py-2.5 bg-yellow-600 text-white font-semibold rounded-lg hover:bg-yellow-700 transition-colors shadow-lg shadow-yellow-600/20"
+              >
+                Post Announcement
+              </button>
+
+              <div className="pt-4">
+                <h5 className="text-sm font-medium text-gray-400 mb-3">
+                  Recent Announcements:
+                </h5>
+                <ul className="space-y-2">
+                  {announcements.map((a) => (
+                    <li
+                      key={a.id}
+                      className="p-3 bg-gray-950/30 rounded-md border-l-2 border-yellow-500 text-sm text-gray-300"
+                    >
+                      <span className="font-bold text-white block text-xs mb-1">
+                        [{a.date}]
+                      </span>
+                      {a.content}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
         </>
@@ -741,37 +703,35 @@ const AdminDashboard = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-800">
-                  {allocations.map((allocation) => (
-                    <tr
-                      key={allocation.id}
-                      className="hover:bg-gray-800/40 transition-colors"
-                    >
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-white">
-                          {allocation.teacherName}
-                        </div>
-                        <div className="text-xs text-gray-500">
-                          {allocation.teacherId}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                        {allocation.subjectName}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">
-                        <span className="px-2.5 py-0.5 inline-flex text-xs font-semibold rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">
-                          {allocation.subjectId}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-right">
-                        <button
-                          onClick={() => deleteAllocation(allocation.id)}
-                          className="text-red-400 hover:text-red-300 transition-colors p-2"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                  {allocations &&
+                    allocations.map((allocation) => (
+                      <tr
+                        key={allocation.id}
+                        className="hover:bg-gray-800/40 transition-colors"
+                      >
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div className="text-sm font-medium text-white">
+                            {allocation.teacherName}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                          {allocation.subjectName}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm">
+                          <span className="px-2.5 py-0.5 inline-flex text-xs font-semibold rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                            {allocation.subjectId}
+                          </span>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-right">
+                          <button
+                            onClick={() => deleteAllocation(allocation.id)}
+                            className="text-red-400 hover:text-red-300 transition-colors p-2"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
                 </tbody>
               </table>
             </div>
